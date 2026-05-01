@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>POSSIBLE COFFEE タリー</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     POSSIBLE COFFEE タリー - iOS-inspired Design System
+     ============================================================ */
+
+  :root {
+    /* Colors — iOS-style systemized palette with POSSIBLE warmth */
+    --bg-primary: #F2EFEA;
+    --bg-secondary: #FBF9F5;
+    --bg-grouped: #EDE8E0;
+    --bg-elevated: #FFFFFF;
+    --bg-glass: rgba(251, 249, 245, 0.72);
+
+    --label-primary: #1C1A17;
+    --label-secondary: rgba(28, 26, 23, 0.6);
+    --label-tertiary: rgba(28, 26, 23, 0.3);
+    --label-quaternary: rgba(28, 26, 23, 0.15);
+
+    --fill-primary: rgba(120, 105, 85, 0.14);
+    --fill-secondary: rgba(120, 105, 85, 0.08);
+    --fill-tertiary: rgba(120, 105, 85, 0.05);
+
+    --separator: rgba(60, 50, 40, 0.08);
+    --separator-opaque: #E6E0D5;
+
+    --accent: #1C1A17;
+    --accent-soft: #3D3832;
+    --accent-warm: #6B4E2E;
+
+    --green: #30A46C;
+    --orange: #E8A23D;
+    --red: #D9614E;
+
+    /* Depth — layered soft shadows */
+    --shadow-xs: 0 1px 2px rgba(28, 26, 23, 0.04);
+    --shadow-sm: 0 1px 3px rgba(28, 26, 23, 0.05), 0 1px 2px rgba(28, 26, 23, 0.03);
+    --shadow-md: 0 4px 12px rgba(28, 26, 23, 0.06), 0 1px 3px rgba(28, 26, 23, 0.04);
+    --shadow-lg: 0 10px 32px rgba(28, 26, 23, 0.08), 0 4px 12px rgba(28, 26, 23, 0.05);
+    --shadow-xl: 0 20px 50px rgba(28, 26, 23, 0.12), 0 8px 20px rgba(28, 26, 23, 0.06);
+
+    /* Radii */
+    --r-xs: 8px;
+    --r-sm: 12px;
+    --r-md: 16px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+    --r-full: 999px;
+
+    /* Motion */
+    --ease-ios: cubic-bezier(0.28, 0.11, 0.32, 1);
+    --ease-ios-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv01", "cv11";
+    letter-spacing: -0.01em;
+    color: var(--label-primary);
+    background: #1a0f08;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    overscroll-behavior: none;
+  }
+
+  /* ============================================================
+     Phone frame
+     ============================================================ */
+  .phone-frame {
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    max-height: 100vh;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Ambient warm glow — extremely subtle */
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    left: -60px;
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle, rgba(215, 170, 110, 0.15), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -140px;
+    right: -80px;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(139, 100, 60, 0.12), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (min-width: 500px) {
+    .phone-frame {
+      max-height: 900px;
+      border-radius: 44px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4),
+                  0 16px 32px rgba(0, 0, 0, 0.25),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      margin: 20px 0;
+    }
+  }
+
+  /* ============================================================
+     Status bar (top, translucent)
+     ============================================================ */
+  .status-bar {
+    position: relative;
+    z-index: 10;
+    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-glass);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+
+  .menu-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-full);
+    border: none;
+    background: var(--fill-secondary);
+    color: var(--label-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s var(--ease-ios);
+  }
+  .menu-btn:active {
+    background: var(--fill-primary);
+    transform: scale(0.92);
+  }
+
+  .stat-center { text-align: center; }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label-secondary);
+    letter-spacing: 0.2px;
+    margin-bottom: 1px;
+  }
+  .stat-value {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-value span { font-weight: 700; }
+
+  .sync-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 8px;
+    border-radius: var(--r-full);
+    background: var(--fill-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label-primary);
+  }
+  .sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--r-full);
+    background: var(--green);
+    box-shadow: 0 0 0 0 currentColor;
+    animation: dotPulse 2.6s ease-out infinite;
+  }
+  @keyframes dotPulse {
+    0% { box-shadow: 0 0 0 0 rgba(48, 164, 108, 0.5); }
+    80% { box-shadow: 0 0 0 6px rgba(48, 164, 108, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(48, 164, 108, 0); }
+  }
+
+  /* ============================================================
+     Menu overlay (sheet from top)
+     ============================================================ */
+  .menu-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(28, 26, 23, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 30;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-ios);
+  }
+  .menu-overlay.open { display: block; opacity: 1; }
+  .menu-panel {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    right: 12px;
+    background: var(--bg-elevated);
+    padding: 18px;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    animation: menuSlide 0.35s var(--ease-ios-out);
+  }
+  @keyframes menuSlide {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .menu-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--label-tertiary);
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .recorder-group {
+    display: flex;
+    gap: 6px;
+    padding: 3px;
+    background: var(--fill-secondary);
+    border-radius: var(--r-sm);
+    margin-bottom: 16px;
+  }
+  .recorder-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: calc(var(--r-sm) - 3px);
+    background: transparent;
+    color: var(--label-secondary);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s var(--ease-ios);
+  }
+  .recorder-btn.active {
+    background: var(--bg-elevated);
+    color: var(--label-primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .end-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--fill-secondary);
+    border: none;
+    border-radius: var(--r-sm);
+    color: var(--label-primary);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: background 0.18s var(--ease-ios);
+  }
+  .end-btn:active { background: var(--fill-primary); }
+  .menu-close {
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--label-secondary);
+    cursor: pointer;
+    margin-top: 4px;
+  }
+
+  /* ============================================================
+     Product grid
+     ============================================================ */
+  .products {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px 12px;
+    position: relative;
+    z-index: 1;
+    -webkit-overflow-scrolling: touch;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-tertiary);
+    padding: 0 4px 10px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .product-btn {
+    position: relative;
+    height: 88px;
+    background: var(--bg-elevated);
+    border: none;
+    border-radius: var(--r-md);
+    color: var(--label-primary);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.22s var(--ease-ios);
+    overflow: hidden;
+  }
+  .product-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent 40%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .product-btn:active {
+    transform: scale(0.96);
+    box-shadow: var(--shadow-xs);
+  }
+  .product-btn.in-cart {
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(28, 26, 23, 0.25), 0 2px 6px rgba(28, 26, 23, 0.15);
+    font-weight: 600;
+  }
+  .product-btn.in-cart::before {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
+  }
+  .qty-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--r-full);
+    background: #FFFFFF;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    animation: badgePop 0.3s var(--ease-ios-out);
+  }
+  @keyframes badgePop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  /* ============================================================
+     Cart
+     ============================================================ */
+  .cart-section {
+    position: relative;
+    z-index: 1;
+    padding: 4px 16px 0;
+    flex-shrink: 0;
+  }
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 4px 10px;
+  }
+  .cart-recorder {
+    font-size: 11px;
+    color: var(--label-tertiary);
+    letter-spacing: 0.2px;
+  }
+  .cart-empty {
+    padding: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--label-tertiary);
+    background: var(--fill-tertiary);
+    border-radius: var(--r-md);
+  }
+  .cart-items {
+    max-height: 160px;
+    overflow-y: auto;
+    background: var(--bg-elevated);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+  }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 0.5px solid var(--separator);
+    animation: rowIn 0.25s var(--ease-ios-out);
+  }
+  .cart-item:last-child { border-bottom: none; }
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cart-item-name {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-full);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 500;
+    transition: all 0.15s var(--ease-ios);
+  }
+  .qty-btn:active { transform: scale(0.88); }
+  .qty-btn.minus {
+    background: var(--fill-secondary);
+    color: var(--label-primary);
+  }
+  .qty-btn.plus {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+  .qty-display {
+    min-width: 24px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--label-primary);
+  }
+  .remove-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--r-full);
+    border: none;
+    background: transparent;
+    color: var(--label-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 300;
+    transition: color 0.15s;
+  }
+  .remove-btn:active { color: var(--red); }
+
+  /* ============================================================
+     Recent records
+     ============================================================ */
+  .recent-section {
+    position: relative;
+    z-index: 1;
+    padding: 8px 16px 0;
+    flex-shrink: 0;
+  }
+  .recent-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--fill-tertiary);
+    border: none;
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--label-secondary);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .recent-toggle:active { background: var(--fill-secondary); }
+  .chevron {
+    font-size: 10px;
+    color: var(--label-tertiary);
+    transition: transform 0.25s var(--ease-ios);
+  }
+  .chevron.expanded { transform: rotate(180deg); }
+
+  .recent-list {
+    display: none;
+    padding: 8px 0 0;
+    max-height: 180px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .recent-list.open { display: block; }
+  .recent-item {
+    background: var(--bg-elevated);
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    box-shadow: var(--shadow-xs);
+    transition: all 0.18s var(--ease-ios);
+  }
+  .recent-item:active {
+    transform: scale(0.98);
+    background: var(--fill-tertiary);
+  }
+  .recent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+  .recent-time {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .recent-hint {
+    font-size: 10px;
+    color: var(--label-tertiary);
+  }
+  .recent-items-text {
+    font-size: 13px;
+    color: var(--label-primary);
+    letter-spacing: -0.1px;
+  }
+
+  /* ============================================================
+     Record button
+     ============================================================ */
+  .record-section {
+    position: relative;
+    z-index: 1;
+    padding: 16px 16px 0;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
+  }
+  .record-btn {
+    width: 100%;
+    height: 54px;
+    border: none;
+    border-radius: var(--r-md);
+    background: var(--accent);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(28, 26, 23, 0.25), 0 2px 6px rgba(28, 26, 23, 0.15);
+    transition: all 0.2s var(--ease-ios);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .record-btn:active:not(:disabled) {
+    transform: scale(0.98) translateY(1px);
+    box-shadow: 0 4px 12px rgba(28, 26, 23, 0.2), 0 1px 3px rgba(28, 26, 23, 0.15);
+  }
+  .record-btn:disabled {
+    background: var(--fill-primary);
+    color: var(--label-tertiary);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  /* ============================================================
+     Snackbar
+     ============================================================ */
+  .snackbar {
+    position: absolute;
+    bottom: 96px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--accent);
+    color: #FFFFFF;
+    padding: 11px 18px;
+    border-radius: var(--r-full);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    box-shadow: var(--shadow-xl);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s var(--ease-ios-out);
+    white-space: nowrap;
+  }
+  .snackbar.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ============================================================
+     Admin screen
+     ============================================================ */
+  .admin-screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-primary);
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    animation: slideUp 0.35s var(--ease-ios-out);
+  }
+  .admin-screen.open { display: flex; }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .admin-header {
+    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-glass);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+  .admin-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .admin-close-btn {
+    background: var(--fill-secondary);
+    border: none;
+    color: var(--label-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-full);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease-ios);
+  }
+  .admin-close-btn:active {
+    background: var(--fill-primary);
+    transform: scale(0.92);
+  }
+  .admin-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-list-empty {
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--label-tertiary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .admin-item {
+    background: var(--bg-elevated);
+    border-radius: var(--r-md);
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: opacity 0.2s;
+  }
+  .admin-item.inactive { opacity: 0.5; }
+
+  .reorder-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .reorder-btn {
+    width: 28px;
+    height: 22px;
+    border: none;
+    background: var(--fill-secondary);
+    border-radius: 6px;
+    font-size: 9px;
+    cursor: pointer;
+    color: var(--label-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reorder-btn:disabled { opacity: 0.25; }
+  .reorder-btn:active:not(:disabled) {
+    background: var(--fill-primary);
+    transform: scale(0.92);
+  }
+
+  .admin-item-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .admin-item-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .toggle-switch {
+    width: 44px;
+    height: 26px;
+    border-radius: var(--r-full);
+    background: var(--label-quaternary);
+    position: relative;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+    transition: background 0.25s var(--ease-ios);
+  }
+  .toggle-switch.on { background: var(--green); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--r-full);
+    background: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1);
+    transition: transform 0.25s var(--ease-ios);
+  }
+  .toggle-switch.on::after { transform: translateX(18px); }
+
+  .admin-icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--r-full);
+    border: none;
+    background: var(--fill-secondary);
+    cursor: pointer;
+    color: var(--label-primary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s var(--ease-ios);
+  }
+  .admin-icon-btn:active {
+    background: var(--fill-primary);
+    transform: scale(0.92);
+  }
+  .admin-icon-btn.danger { color: var(--red); }
+
+  .add-btn {
+    margin: 6px 16px 16px;
+    margin-bottom: max(16px, env(safe-area-inset-bottom));
+    padding: 15px;
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(28, 26, 23, 0.2), 0 2px 6px rgba(28, 26, 23, 0.12);
+    transition: all 0.2s var(--ease-ios);
+  }
+  .add-btn:active {
+    transform: scale(0.98) translateY(1px);
+    box-shadow: 0 4px 10px rgba(28, 26, 23, 0.15);
+  }
+
+  /* ============================================================
+     Modal
+     ============================================================ */
+  .edit-modal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(28, 26, 23, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 60;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-ios);
+  }
+  .edit-modal-overlay.open {
+    display: flex;
+    opacity: 1;
+  }
+  .edit-modal {
+    background: var(--bg-secondary);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding: 22px 20px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    width: 100%;
+    max-width: 430px;
+    box-shadow: var(--shadow-xl);
+    animation: sheetUp 0.35s var(--ease-ios-out);
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .edit-modal::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 5px;
+    background: var(--label-quaternary);
+    border-radius: var(--r-full);
+    margin: -8px auto 16px;
+  }
+  .edit-modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: var(--label-primary);
+    text-align: center;
+    letter-spacing: -0.3px;
+  }
+  .edit-field { margin-bottom: 16px; }
+  .edit-field-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-tertiary);
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .edit-input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--r-sm);
+    background: var(--bg-elevated);
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--label-primary);
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--separator);
+    transition: box-shadow 0.2s;
+    letter-spacing: -0.2px;
+  }
+  .edit-input:focus {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .edit-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s var(--ease-ios);
+  }
+  .edit-btn:active { transform: scale(0.98); }
+  .edit-btn.cancel {
+    background: var(--fill-secondary);
+    color: var(--label-primary);
+  }
+  .edit-btn.save {
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 6px 16px rgba(28, 26, 23, 0.2);
+  }
+
+  /* Scrollbar minimal */
+  ::-webkit-scrollbar { width: 0; display: none; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <!-- ステータスバー -->
+  <header class="status-bar">
+    <button class="menu-btn" id="menuBtn" aria-label="メニュー">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="stat-center">
+      <div class="stat-label" id="dateLabel">—</div>
+      <div class="stat-value"><span id="itemCount">0</span> 杯</div>
+    </div>
+    <div class="sync-badge">
+      <div class="sync-dot"></div>
+      <span class="sync-label">同期済</span>
+    </div>
+  </header>
+
+  <!-- メニュー -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-panel" onclick="event.stopPropagation()">
+      <div class="menu-label">記録者</div>
+      <div class="recorder-group" id="recorderGroup">
+        <!-- 動的生成 -->
+      </div>
+      <button class="end-btn" id="recorderAdminBtn" style="color:var(--label-secondary);">記録者を管理</button>
+      <div class="menu-label" style="margin-top:16px;">その他</div>
+      <button class="end-btn" id="adminBtn">商品管理</button>
+      <button class="end-btn" id="endBtn">営業終了</button>
+      <button class="menu-close" id="menuCloseBtn">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 商品グリッド -->
+  <section class="products">
+    <div class="section-label">商品</div>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+
+  <!-- カート -->
+  <section class="cart-section">
+    <div class="cart-header">
+      <div class="section-label" style="margin: 0;">カート <span id="cartCountLabel"></span></div>
+      <div class="cart-recorder">記録者:<span id="recorderLabel">Yuki</span></div>
+    </div>
+    <div id="cartBody">
+      <div class="cart-empty">商品をタップしてカートに追加</div>
+    </div>
+  </section>
+
+  <!-- 直近の記録 -->
+  <section class="recent-section">
+    <button class="recent-toggle" id="recentToggle">
+      <span>直近の記録 <span id="recentCountLabel">(3)</span></span>
+      <span class="chevron" id="recentChevron">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="display:block;"><path d="M2 7 L5.5 3.5 L9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+    <div class="recent-list" id="recentList"></div>
+  </section>
+
+  <!-- 記録ボタン -->
+  <div class="record-section">
+    <button class="record-btn" id="recordBtn" disabled>記録</button>
+  </div>
+
+  <!-- スナックバー -->
+  <div class="snackbar" id="snackbar"></div>
+
+  <!-- 商品管理画面(全画面オーバーレイ) -->
+  <div class="admin-screen" id="adminScreen">
+    <header class="admin-header">
+      <div class="admin-title">商品管理</div>
+      <button class="admin-close-btn" id="adminCloseBtn" aria-label="閉じる">×</button>
+    </header>
+    <div class="admin-list" id="adminList"></div>
+    <button class="add-btn" id="addProductBtn">+ 商品を追加</button>
+  </div>
+
+  <!-- 記録者管理画面(全画面オーバーレイ) -->
+  <div class="admin-screen" id="recorderAdminScreen">
+    <header class="admin-header">
+      <div class="admin-title">記録者を管理</div>
+      <button class="admin-close-btn" id="recorderAdminCloseBtn" aria-label="閉じる">×</button>
+    </header>
+    <div class="admin-list" id="recorderAdminList"></div>
+    <button class="add-btn" id="addRecorderBtn">+ 記録者を追加</button>
+  </div>
+
+  <!-- 編集モーダル(商品マスタ用) -->
+  <div class="edit-modal-overlay" id="editModalOverlay">
+    <div class="edit-modal" onclick="event.stopPropagation()">
+      <div class="edit-modal-title" id="editModalTitle">商品を編集</div>
+      <div class="edit-field">
+        <div class="edit-field-label">商品名</div>
+        <input type="text" class="edit-input" id="editNameInput" placeholder="例:生黒糖ラテ" maxlength="30">
+      </div>
+      <div class="edit-actions">
+        <button class="edit-btn cancel" id="editCancelBtn">キャンセル</button>
+        <button class="edit-btn save" id="editSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 記録者編集モーダル -->
+  <div class="edit-modal-overlay" id="recorderEditModalOverlay">
+    <div class="edit-modal" onclick="event.stopPropagation()">
+      <div class="edit-modal-title" id="recorderEditModalTitle">記録者を編集</div>
+      <div class="edit-field">
+        <div class="edit-field-label">名前</div>
+        <input type="text" class="edit-input" id="recorderEditNameInput" placeholder="例:Yuki" maxlength="20">
+      </div>
+      <div class="edit-actions">
+        <button class="edit-btn cancel" id="recorderEditCancelBtn">キャンセル</button>
+        <button class="edit-btn save" id="recorderEditSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Basket編集モーダル -->
+  <div class="edit-modal-overlay" id="basketEditOverlay">
+    <div class="edit-modal" onclick="event.stopPropagation()">
+      <div class="edit-modal-title" id="basketEditTitle">記録を編集</div>
+      <div class="edit-field">
+        <div class="edit-field-label">商品</div>
+        <div id="basketEditItems"></div>
+      </div>
+      <div class="edit-actions" style="flex-wrap:wrap;">
+        <button class="edit-btn cancel" id="basketEditDeleteBtn" style="border-color:#C05B3F; color:#C05B3F; flex: 1 1 100%;">この記録を削除</button>
+        <button class="edit-btn cancel" id="basketEditCancelBtn">キャンセル</button>
+        <button class="edit-btn save" id="basketEditSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================================
+  // POSSIBLE COFFEE タリー - フロントエンド(本番版 v1.0)
+  // ==========================================================
+
+  // GAS バックエンドURL
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbz6yAL-hn4YLQkiCy9iDk84TTPjVHAVSm__8WIPAOMqSyvb_zOKsayT2s6b9v-vSBE/exec';
+
+  // localStorage キー
+  const LS = {
+    PRODUCTS: 'tally.products',
+    RECORDERS: 'tally.recorders',
+    RECENT: 'tally.recent',
+    RECENT_DATE: 'tally.recent_date',
+    RECORDER: 'tally.recorder',
+    SYNC_QUEUE: 'tally.sync_queue',
+    DEVICE_ID: 'tally.device_id',
+  };
+
+  // --- ユーティリティ ---
+  function getDeviceId() {
+    let id = localStorage.getItem(LS.DEVICE_ID);
+    if (!id) {
+      id = 'd_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
+      localStorage.setItem(LS.DEVICE_ID, id);
+    }
+    return id;
+  }
+  function generateId(prefix) {
+    return prefix + '_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  }
+  function getTodayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  // --- JSONP呼び出し ---
+  let jsonpCounter = 0;
+  function jsonpCall(action, params, timeout) {
+    params = params || {};
+    timeout = timeout || 15000;
+    return new Promise((resolve, reject) => {
+      const callbackName = '__jsonp_cb_' + (jsonpCounter++) + '_' + Date.now();
+      const urlParams = new URLSearchParams();
+      urlParams.set('action', action);
+      urlParams.set('callback', callbackName);
+      Object.keys(params).forEach(k => {
+        const v = params[k];
+        urlParams.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v));
+      });
+      const url = GAS_URL + '?' + urlParams.toString();
+      const script = document.createElement('script');
+      let timeoutId;
+      function cleanup() {
+        clearTimeout(timeoutId);
+        try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+      timeoutId = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, timeout);
+      window[callbackName] = (data) => { cleanup(); resolve(data); };
+      script.onerror = () => { cleanup(); reject(new Error('network_error')); };
+      script.src = url;
+      document.head.appendChild(script);
+    });
+  }
+
+  // --- 永続化 ---
+  function loadProducts() {
+    try { return JSON.parse(localStorage.getItem(LS.PRODUCTS) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveProducts(products) { localStorage.setItem(LS.PRODUCTS, JSON.stringify(products)); }
+
+  function loadRecorders() {
+    try {
+      const cached = JSON.parse(localStorage.getItem(LS.RECORDERS) || 'null');
+      if (Array.isArray(cached) && cached.length > 0) return cached;
+    } catch(e) {}
+    // キャッシュがなければデフォルト
+    return [
+      { id: 'r1', name: 'Yuki', display_order: 1, active: true },
+      { id: 'r2', name: 'パートナー', display_order: 2, active: true },
+    ];
+  }
+  function saveRecorders(recorders) { localStorage.setItem(LS.RECORDERS, JSON.stringify(recorders)); }
+
+  function loadRecent() {
+    const today = getTodayStr();
+    const savedDate = localStorage.getItem(LS.RECENT_DATE);
+    if (savedDate !== today) {
+      localStorage.setItem(LS.RECENT_DATE, today);
+      localStorage.setItem(LS.RECENT, '[]');
+      return [];
+    }
+    try { return JSON.parse(localStorage.getItem(LS.RECENT) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveRecent(baskets) {
+    localStorage.setItem(LS.RECENT, JSON.stringify(baskets));
+    localStorage.setItem(LS.RECENT_DATE, getTodayStr());
+  }
+  function loadRecorder() { return localStorage.getItem(LS.RECORDER) || 'Yuki'; }
+  function saveRecorder(r) { localStorage.setItem(LS.RECORDER, r); }
+  function loadSyncQueue() {
+    try { return JSON.parse(localStorage.getItem(LS.SYNC_QUEUE) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveSyncQueue(queue) { localStorage.setItem(LS.SYNC_QUEUE, JSON.stringify(queue)); }
+
+  // --- 同期キュー ---
+  function enqueue(action, params) {
+    const queue = loadSyncQueue();
+    queue.push({
+      taskId: generateId('task'),
+      action: action,
+      params: params,
+      retries: 0,
+      queuedAt: Date.now(),
+    });
+    saveSyncQueue(queue);
+    updateSyncStatus();
+    processSyncQueue();
+  }
+
+  let isSyncing = false;
+  async function processSyncQueue() {
+    if (isSyncing) return;
+    if (!navigator.onLine) { updateSyncStatus(); return; }
+    const queue = loadSyncQueue();
+    if (queue.length === 0) { updateSyncStatus(); return; }
+    isSyncing = true;
+    updateSyncStatus();
+
+    const remaining = queue.slice();
+    while (remaining.length > 0) {
+      const task = remaining[0];
+      try {
+        const res = await jsonpCall(task.action, task.params);
+        if (res && res.ok) {
+          remaining.shift();
+          saveSyncQueue(remaining);
+        } else {
+          task.retries = (task.retries || 0) + 1;
+          task.lastError = (res && res.error) || 'unknown';
+          saveSyncQueue(remaining);
+          break;
+        }
+      } catch (err) {
+        task.retries = (task.retries || 0) + 1;
+        task.lastError = err.message;
+        saveSyncQueue(remaining);
+        break;
+      }
+    }
+    isSyncing = false;
+    updateSyncStatus();
+  }
+
+  function updateSyncStatus() {
+    const dot = document.querySelector('.sync-dot');
+    const label = document.querySelector('.sync-label');
+    if (!dot || !label) return;
+    const queue = loadSyncQueue();
+    if (!navigator.onLine) {
+      dot.style.background = '#C05B3F';
+      label.textContent = 'オフライン';
+    } else if (queue.length > 0) {
+      dot.style.background = '#D4A84B';
+      label.textContent = '保留(' + queue.length + ')';
+    } else {
+      dot.style.background = '#7A9B6E';
+      label.textContent = '同期済';
+    }
+  }
+
+  // ==========================================================
+  // State
+  // ==========================================================
+  let PRODUCTS = loadProducts();
+  let RECORDERS = loadRecorders();
+  let cart = [];
+  let recentBaskets = loadRecent();
+  let recorder = loadRecorder();
+  let recentExpanded = false;
+  let editingProductId = null;
+  let editingRecorderId = null;
+  let editingBasket = null;
+
+  // ==========================================================
+  // レンダリング
+  // ==========================================================
+  function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    const activeProducts = PRODUCTS.filter(p => p.active);
+    if (activeProducts.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; padding:20px; text-align:center; color:#b0a090; font-size:13px;">商品が読み込まれていません<br>メニュー → 商品管理から確認してください</div>';
+      return;
+    }
+    grid.innerHTML = activeProducts.map(p => {
+      const inCart = cart.find(c => c.id === p.id);
+      return '<button class="product-btn ' + (inCart ? 'in-cart' : '') + '" data-id="' + p.id + '">' +
+        p.name +
+        (inCart ? '<span class="qty-badge">' + inCart.qty + '</span>' : '') +
+        '</button>';
+    }).join('');
+    grid.querySelectorAll('.product-btn').forEach(btn => {
+      btn.addEventListener('click', () => addToCart(btn.dataset.id));
+    });
+  }
+
+  function renderCart() {
+    const body = document.getElementById('cartBody');
+    const countLabel = document.getElementById('cartCountLabel');
+    const recordBtn = document.getElementById('recordBtn');
+    const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+    if (cart.length === 0) {
+      body.innerHTML = '<div class="cart-empty">商品をタップしてカートに追加</div>';
+      countLabel.textContent = '';
+      recordBtn.disabled = true;
+      recordBtn.textContent = '記録';
+    } else {
+      countLabel.textContent = '(' + totalQty + '点)';
+      body.innerHTML = '<div class="cart-items">' + cart.map(item =>
+        '<div class="cart-item">' +
+          '<div class="cart-item-name">' + item.name + '</div>' +
+          '<button class="qty-btn minus" data-action="minus" data-id="' + item.id + '">−</button>' +
+          '<div class="qty-display">' + item.qty + '</div>' +
+          '<button class="qty-btn plus" data-action="plus" data-id="' + item.id + '">+</button>' +
+          '<button class="remove-btn" data-action="remove" data-id="' + item.id + '">×</button>' +
+        '</div>'
+      ).join('') + '</div>';
+      body.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => handleCartAction(btn.dataset.action, btn.dataset.id));
+      });
+      recordBtn.disabled = false;
+      recordBtn.textContent = '✓ 記録 (' + totalQty + '点)';
+    }
+  }
+
+  function renderRecent() {
+    const list = document.getElementById('recentList');
+    const countLabel = document.getElementById('recentCountLabel');
+    const chevron = document.getElementById('recentChevron');
+    countLabel.textContent = '(' + recentBaskets.length + ')';
+    list.innerHTML = recentBaskets.slice(0, 10).map(b =>
+      '<div class="recent-item" data-id="' + b.basketId + '">' +
+        '<div class="recent-header">' +
+          '<div class="recent-time">' + b.time + ' · ' + b.recorder + '</div>' +
+          '<div class="recent-hint">タップで編集</div>' +
+        '</div>' +
+        '<div class="recent-items-text">' +
+          b.items.map(i => i.name + ' ×' + i.qty).join(' · ') +
+        '</div>' +
+      '</div>'
+    ).join('');
+    list.querySelectorAll('.recent-item').forEach(item => {
+      item.addEventListener('click', () => openBasketEditModal(item.dataset.id));
+    });
+    list.classList.toggle('open', recentExpanded);
+    chevron.classList.toggle('expanded', !recentExpanded);
+  }
+
+  function renderStatus() {
+    const now = new Date();
+    const days = ['日', '月', '火', '水', '木', '金', '土'];
+    document.getElementById('dateLabel').textContent = (now.getMonth() + 1) + '/' + now.getDate() + '(' + days[now.getDay()] + ')';
+    const totalItems = recentBaskets.reduce((sum, b) => sum + b.items.reduce((s, i) => s + i.qty, 0), 0);
+    document.getElementById('itemCount').textContent = totalItems;
+    updateSyncStatus();
+  }
+
+  function renderRecorderButtons() {
+    const group = document.getElementById('recorderGroup');
+    const active = RECORDERS.filter(r => r.active);
+
+    // 現在のrecorderがactiveにいなければ、activeの先頭に切替
+    if (active.length > 0 && !active.find(r => r.name === recorder)) {
+      recorder = active[0].name;
+      saveRecorder(recorder);
+    }
+
+    // カート側のラベル更新
+    const recorderLabelEl = document.getElementById('recorderLabel');
+    if (recorderLabelEl) recorderLabelEl.textContent = recorder;
+
+    if (active.length === 0) {
+      group.innerHTML = '<div style="padding:10px; text-align:center; color:var(--label-tertiary); font-size:12px;">記録者が登録されていません</div>';
+      return;
+    }
+
+    group.innerHTML = active.map(r =>
+      '<button class="recorder-btn ' + (r.name === recorder ? 'active' : '') + '" data-recorder="' + r.name + '">' +
+        r.name +
+      '</button>'
+    ).join('');
+    group.querySelectorAll('.recorder-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        recorder = btn.dataset.recorder;
+        saveRecorder(recorder);
+        renderRecorderButtons();
+        setTimeout(() => document.getElementById('menuOverlay').classList.remove('open'), 200);
+      });
+    });
+  }
+
+  function renderAll() {
+    renderProducts();
+    renderCart();
+    renderRecent();
+    renderStatus();
+    renderRecorderButtons();
+  }
+
+  // ==========================================================
+  // カート操作
+  // ==========================================================
+  function addToCart(productId) {
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (!product) return;
+    const existing = cart.find(c => c.id === productId);
+    if (existing) existing.qty += 1;
+    else cart.push({ id: product.id, name: product.name, qty: 1 });
+    renderProducts();
+    renderCart();
+  }
+
+  function handleCartAction(action, productId) {
+    if (action === 'plus') {
+      const item = cart.find(c => c.id === productId);
+      if (item) item.qty += 1;
+    } else if (action === 'minus') {
+      const item = cart.find(c => c.id === productId);
+      if (item) {
+        item.qty -= 1;
+        if (item.qty <= 0) cart = cart.filter(c => c.id !== productId);
+      }
+    } else if (action === 'remove') {
+      cart = cart.filter(c => c.id !== productId);
+    }
+    renderProducts();
+    renderCart();
+  }
+
+  // ==========================================================
+  // basket確定
+  // ==========================================================
+  function confirmBasket() {
+    if (cart.length === 0) return;
+    const now = new Date();
+    const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    const basket_id = 'b_' + getDeviceId() + '_' + Date.now();
+    const confirmed_at = now.toISOString();
+    const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+    const items = cart.map(c => ({
+      transaction_id: generateId('tx'),
+      product_id: c.id,
+      product_name: c.name,
+      quantity: c.qty,
+      recorder: recorder,
+    }));
+
+    recentBaskets.unshift({
+      basketId: basket_id,
+      time: timeStr,
+      items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty })),
+      recorder: recorder,
+      confirmed_at: confirmed_at,
+    });
+    saveRecent(recentBaskets);
+    cart = [];
+    renderAll();
+    enqueue('addBasket', { data: { basket_id: basket_id, confirmed_at: confirmed_at, items: items, note: '' } });
+    showSnackbar('✓ ' + totalQty + '点 記録しました');
+  }
+
+  function showSnackbar(text) {
+    const sb = document.getElementById('snackbar');
+    sb.textContent = text;
+    sb.classList.add('show');
+    setTimeout(() => sb.classList.remove('show'), 2000);
+  }
+
+  // ==========================================================
+  // basket編集モーダル
+  // ==========================================================
+  function openBasketEditModal(basketId) {
+    const basket = recentBaskets.find(b => b.basketId === basketId);
+    if (!basket) return;
+    editingBasket = {
+      basketId: basket.basketId,
+      items: basket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty })),
+      original_items: basket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty })),
+    };
+    renderBasketEdit();
+    document.getElementById('basketEditOverlay').classList.add('open');
+  }
+
+  function renderBasketEdit() {
+    if (!editingBasket) return;
+    const container = document.getElementById('basketEditItems');
+    const totalQty = editingBasket.items.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('basketEditTitle').textContent = '記録を編集(' + totalQty + '点)';
+    container.innerHTML = editingBasket.items.map(item =>
+      '<div class="cart-item" style="background:#FFFFFF; margin-bottom:6px;">' +
+        '<div class="cart-item-name">' + item.name + '</div>' +
+        '<button class="qty-btn minus" data-bedit="minus" data-id="' + item.id + '">−</button>' +
+        '<div class="qty-display">' + item.qty + '</div>' +
+        '<button class="qty-btn plus" data-bedit="plus" data-id="' + item.id + '">+</button>' +
+        '<button class="remove-btn" data-bedit="remove" data-id="' + item.id + '">×</button>' +
+      '</div>'
+    ).join('');
+    if (editingBasket.items.length === 0) {
+      container.innerHTML = '<div style="padding:16px; text-align:center; color:#b0a090; font-size:12px;">全て削除されました<br>「保存」で記録を削除します</div>';
+    }
+    container.querySelectorAll('[data-bedit]').forEach(btn => {
+      btn.addEventListener('click', () => handleBasketEditAction(btn.dataset.bedit, btn.dataset.id));
+    });
+  }
+
+  function handleBasketEditAction(action, productId) {
+    const item = editingBasket.items.find(i => i.id === productId);
+    if (!item) return;
+    if (action === 'plus') item.qty += 1;
+    else if (action === 'minus') {
+      item.qty -= 1;
+      if (item.qty <= 0) editingBasket.items = editingBasket.items.filter(i => i.id !== productId);
+    } else if (action === 'remove') {
+      editingBasket.items = editingBasket.items.filter(i => i.id !== productId);
+    }
+    renderBasketEdit();
+  }
+
+  function closeBasketEditModal() {
+    document.getElementById('basketEditOverlay').classList.remove('open');
+    editingBasket = null;
+  }
+
+  function saveBasketEdit() {
+    if (!editingBasket) return;
+    if (editingBasket.items.length === 0) { deleteBasket(); return; }
+    const basket = recentBaskets.find(b => b.basketId === editingBasket.basketId);
+    if (!basket) return;
+
+    enqueue('modifyBasket', {
+      data: {
+        basket_id: editingBasket.basketId,
+        action: 'modify',
+        original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+        modified_items: editingBasket.items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+        modified_at: new Date().toISOString(),
+        recorder: recorder,
+      }
+    });
+
+    basket.items = editingBasket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty }));
+    saveRecent(recentBaskets);
+    renderAll();
+    closeBasketEditModal();
+    showSnackbar('記録を修正しました');
+  }
+
+  function deleteBasket() {
+    if (!editingBasket) return;
+    if (!confirm('この記録を削除しますか?\n※データには「削除済」として残ります')) return;
+
+    enqueue('modifyBasket', {
+      data: {
+        basket_id: editingBasket.basketId,
+        action: 'delete',
+        original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+        modified_at: new Date().toISOString(),
+        recorder: recorder,
+      }
+    });
+    recentBaskets = recentBaskets.filter(b => b.basketId !== editingBasket.basketId);
+    saveRecent(recentBaskets);
+    renderAll();
+    closeBasketEditModal();
+    showSnackbar('記録を削除しました');
+  }
+
+  // ==========================================================
+  // 商品管理
+  // ==========================================================
+  function renderAdminList() {
+    const list = document.getElementById('adminList');
+    if (PRODUCTS.length === 0) {
+      list.innerHTML = '<div class="admin-list-empty">商品がまだありません<br>下の「+ 商品を追加」から登録してください</div>';
+      return;
+    }
+    list.innerHTML = PRODUCTS.map((p, idx) =>
+      '<div class="admin-item ' + (!p.active ? 'inactive' : '') + '">' +
+        '<div class="reorder-group">' +
+          '<button class="reorder-btn" data-action="up" data-id="' + p.id + '" ' + (idx === 0 ? 'disabled' : '') + '>▲</button>' +
+          '<button class="reorder-btn" data-action="down" data-id="' + p.id + '" ' + (idx === PRODUCTS.length - 1 ? 'disabled' : '') + '>▼</button>' +
+        '</div>' +
+        '<div class="admin-item-body">' +
+          '<div class="admin-item-title">' + p.name + '</div>' +
+        '</div>' +
+        '<button class="toggle-switch ' + (p.active ? 'on' : '') + '" data-action="toggle" data-id="' + p.id + '"></button>' +
+        '<button class="admin-icon-btn" data-action="edit" data-id="' + p.id + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>' +
+        '</button>' +
+        '<button class="admin-icon-btn danger" data-action="delete" data-id="' + p.id + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>' +
+        '</button>' +
+      '</div>'
+    ).join('');
+    list.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => handleAdminAction(btn.dataset.action, btn.dataset.id));
+    });
+  }
+
+  function handleAdminAction(action, id) {
+    const idx = PRODUCTS.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    const product = PRODUCTS[idx];
+
+    if (action === 'up' && idx > 0) {
+      const tmp = PRODUCTS[idx - 1]; PRODUCTS[idx - 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
+      syncProductOrder();
+      saveProducts(PRODUCTS);
+      renderAdminList();
+    } else if (action === 'down' && idx < PRODUCTS.length - 1) {
+      const tmp = PRODUCTS[idx + 1]; PRODUCTS[idx + 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
+      syncProductOrder();
+      saveProducts(PRODUCTS);
+      renderAdminList();
+    } else if (action === 'toggle') {
+      product.active = !product.active;
+      enqueue('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+      saveProducts(PRODUCTS);
+      renderAdminList();
+    } else if (action === 'edit') {
+      openEditModal(product);
+    } else if (action === 'delete') {
+      if (confirm('「' + product.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
+        PRODUCTS.splice(idx, 1);
+        enqueue('deleteProduct', { productId: id });
+        saveProducts(PRODUCTS);
+        renderAdminList();
+      }
+    }
+  }
+
+  function syncProductOrder() {
+    PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
+    const orderList = PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }));
+    enqueue('reorderProducts', { data: orderList });
+  }
+
+  function openEditModal(product) {
+    editingProductId = product ? product.id : null;
+    document.getElementById('editModalTitle').textContent = product ? '商品を編集' : '商品を追加';
+    document.getElementById('editNameInput').value = product ? product.name : '';
+    document.getElementById('editModalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('editNameInput').focus(), 100);
+  }
+  function closeEditModal() {
+    document.getElementById('editModalOverlay').classList.remove('open');
+    editingProductId = null;
+  }
+  function saveProduct() {
+    const name = document.getElementById('editNameInput').value.trim();
+    if (!name) { alert('商品名を入力してください'); return; }
+    if (editingProductId === null) {
+      const id = 'p_' + Date.now();
+      const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
+      const newProduct = { id: id, name: name, active: true, display_order: maxOrder + 1 };
+      PRODUCTS.push(newProduct);
+      enqueue('upsertProduct', { data: newProduct });
+    } else {
+      const product = PRODUCTS.find(p => p.id === editingProductId);
+      if (product) {
+        product.name = name;
+        enqueue('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+      }
+    }
+    saveProducts(PRODUCTS);
+    closeEditModal();
+    renderAdminList();
+  }
+
+  // ==========================================================
+  // 記録者管理
+  // ==========================================================
+  function renderRecorderAdminList() {
+    const list = document.getElementById('recorderAdminList');
+    if (RECORDERS.length === 0) {
+      list.innerHTML = '<div class="admin-list-empty">記録者がまだいません<br>下の「+ 記録者を追加」から登録してください</div>';
+      return;
+    }
+    list.innerHTML = RECORDERS.map((r, idx) =>
+      '<div class="admin-item ' + (!r.active ? 'inactive' : '') + '">' +
+        '<div class="reorder-group">' +
+          '<button class="reorder-btn" data-raction="up" data-id="' + r.id + '" ' + (idx === 0 ? 'disabled' : '') + '>▲</button>' +
+          '<button class="reorder-btn" data-raction="down" data-id="' + r.id + '" ' + (idx === RECORDERS.length - 1 ? 'disabled' : '') + '>▼</button>' +
+        '</div>' +
+        '<div class="admin-item-body">' +
+          '<div class="admin-item-title">' + r.name + '</div>' +
+        '</div>' +
+        '<button class="toggle-switch ' + (r.active ? 'on' : '') + '" data-raction="toggle" data-id="' + r.id + '"></button>' +
+        '<button class="admin-icon-btn" data-raction="edit" data-id="' + r.id + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>' +
+        '</button>' +
+        '<button class="admin-icon-btn danger" data-raction="delete" data-id="' + r.id + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>' +
+        '</button>' +
+      '</div>'
+    ).join('');
+    list.querySelectorAll('[data-raction]').forEach(btn => {
+      btn.addEventListener('click', () => handleRecorderAdminAction(btn.dataset.raction, btn.dataset.id));
+    });
+  }
+
+  function handleRecorderAdminAction(action, id) {
+    const idx = RECORDERS.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const rec = RECORDERS[idx];
+
+    if (action === 'up' && idx > 0) {
+      const tmp = RECORDERS[idx - 1]; RECORDERS[idx - 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
+      syncRecorderOrder();
+      saveRecorders(RECORDERS);
+      renderRecorderAdminList();
+    } else if (action === 'down' && idx < RECORDERS.length - 1) {
+      const tmp = RECORDERS[idx + 1]; RECORDERS[idx + 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
+      syncRecorderOrder();
+      saveRecorders(RECORDERS);
+      renderRecorderAdminList();
+    } else if (action === 'toggle') {
+      rec.active = !rec.active;
+      enqueue('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
+      saveRecorders(RECORDERS);
+      renderRecorderAdminList();
+    } else if (action === 'edit') {
+      openRecorderEditModal(rec);
+    } else if (action === 'delete') {
+      if (confirm('「' + rec.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
+        RECORDERS.splice(idx, 1);
+        enqueue('deleteRecorder', { recorderId: id });
+        saveRecorders(RECORDERS);
+        renderRecorderAdminList();
+      }
+    }
+  }
+
+  function syncRecorderOrder() {
+    RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
+    const orderList = RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }));
+    enqueue('reorderRecorders', { data: orderList });
+  }
+
+  function openRecorderEditModal(rec) {
+    editingRecorderId = rec ? rec.id : null;
+    document.getElementById('recorderEditModalTitle').textContent = rec ? '記録者を編集' : '記録者を追加';
+    document.getElementById('recorderEditNameInput').value = rec ? rec.name : '';
+    document.getElementById('recorderEditModalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('recorderEditNameInput').focus(), 100);
+  }
+  function closeRecorderEditModal() {
+    document.getElementById('recorderEditModalOverlay').classList.remove('open');
+    editingRecorderId = null;
+  }
+  function saveRecorderEdit() {
+    const name = document.getElementById('recorderEditNameInput').value.trim();
+    if (!name) { alert('名前を入力してください'); return; }
+    if (editingRecorderId === null) {
+      const id = 'r_' + Date.now();
+      const maxOrder = RECORDERS.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+      const newRec = { id: id, name: name, active: true, display_order: maxOrder + 1 };
+      RECORDERS.push(newRec);
+      enqueue('upsertRecorder', { data: newRec });
+    } else {
+      const rec = RECORDERS.find(r => r.id === editingRecorderId);
+      if (rec) {
+        const oldName = rec.name;
+        rec.name = name;
+        // 現在の選択中記録者の名前が変わった場合、localStorage上の名前も更新
+        if (oldName === recorder) {
+          recorder = name;
+          saveRecorder(recorder);
+        }
+        enqueue('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
+      }
+    }
+    saveRecorders(RECORDERS);
+    closeRecorderEditModal();
+    renderRecorderAdminList();
+  }
+
+  // ==========================================================
+  // イベントリスナー
+  // ==========================================================
+  document.getElementById('recordBtn').addEventListener('click', confirmBasket);
+  document.getElementById('recentToggle').addEventListener('click', () => {
+    recentExpanded = !recentExpanded;
+    renderRecent();
+  });
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.add('open');
+  });
+  document.getElementById('menuOverlay').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+  });
+  document.getElementById('menuCloseBtn').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+  });
+
+  document.getElementById('endBtn').addEventListener('click', () => {
+    if (!confirm('営業終了しますか?')) return;
+    enqueue('markBusinessEnd', {});
+    document.getElementById('menuOverlay').classList.remove('open');
+    showSnackbar('営業終了しました');
+  });
+
+  // 商品管理
+  document.getElementById('adminBtn').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+    document.getElementById('adminScreen').classList.add('open');
+    renderAdminList();
+  });
+  document.getElementById('adminCloseBtn').addEventListener('click', () => {
+    document.getElementById('adminScreen').classList.remove('open');
+    renderAll();
+  });
+  document.getElementById('addProductBtn').addEventListener('click', () => openEditModal(null));
+  document.getElementById('editCancelBtn').addEventListener('click', closeEditModal);
+  document.getElementById('editSaveBtn').addEventListener('click', saveProduct);
+  document.getElementById('editModalOverlay').addEventListener('click', closeEditModal);
+
+  // 記録者管理
+  document.getElementById('recorderAdminBtn').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+    document.getElementById('recorderAdminScreen').classList.add('open');
+    renderRecorderAdminList();
+  });
+  document.getElementById('recorderAdminCloseBtn').addEventListener('click', () => {
+    document.getElementById('recorderAdminScreen').classList.remove('open');
+    renderAll();
+  });
+  document.getElementById('addRecorderBtn').addEventListener('click', () => openRecorderEditModal(null));
+  document.getElementById('recorderEditCancelBtn').addEventListener('click', closeRecorderEditModal);
+  document.getElementById('recorderEditSaveBtn').addEventListener('click', saveRecorderEdit);
+  document.getElementById('recorderEditModalOverlay').addEventListener('click', closeRecorderEditModal);
+
+  // basket編集
+  document.getElementById('basketEditOverlay').addEventListener('click', closeBasketEditModal);
+  document.getElementById('basketEditCancelBtn').addEventListener('click', closeBasketEditModal);
+  document.getElementById('basketEditSaveBtn').addEventListener('click', saveBasketEdit);
+  document.getElementById('basketEditDeleteBtn').addEventListener('click', deleteBasket);
+
+  // ネットワーク状態
+  window.addEventListener('online', () => { updateSyncStatus(); processSyncQueue(); });
+  window.addEventListener('offline', updateSyncStatus);
+
+  // 自動同期(5分おき)
+  setInterval(processSyncQueue, 5 * 60 * 1000);
+
+  // ==========================================================
+  // 初期化
+  // ==========================================================
+  async function initialize() {
+    renderAll();
+
+    if (loadSyncQueue().length > 0) processSyncQueue();
+
+    if (navigator.onLine) {
+      // 商品マスタ
+      try {
+        const res = await jsonpCall('getProducts');
+        if (res && res.ok && Array.isArray(res.products)) {
+          PRODUCTS = res.products;
+          saveProducts(PRODUCTS);
+        }
+      } catch (err) {
+        console.warn('商品マスタ取得失敗、キャッシュを使用:', err);
+      }
+      // 記録者マスタ
+      try {
+        const res = await jsonpCall('getRecorders');
+        if (res && res.ok && Array.isArray(res.recorders)) {
+          RECORDERS = res.recorders;
+          saveRecorders(RECORDERS);
+        }
+      } catch (err) {
+        console.warn('記録者マスタ取得失敗、キャッシュを使用:', err);
+      }
+      renderAll();
+    }
+  }
+
+  initialize();
+</script>
+
+</body>
+</html>
