@@ -2226,31 +2226,64 @@
   // ==========================================================
   // 集計画面
   // ==========================================================
-  function openSummary(isEndOfDay) {
-    renderSummary(isEndOfDay);
+  async function openSummary(isEndOfDay) {
     document.getElementById('summaryScreen').classList.add('open');
+    // 先にローディング状態
+    const titleEl = document.getElementById('summaryTitle');
+    const body = document.getElementById('summaryBody');
+    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
+    body.innerHTML = '<div class="summary-empty">読み込み中...</div>';
+
+    let baskets = recentBaskets; // フォールバック:ローカル
+    let dataSource = 'local';
+
+    // Sheetsから全端末分の今日のbasketを取得(オンライン時のみ)
+    if (navigator.onLine) {
+      try {
+        const res = await jsonpCall('getTodayBaskets');
+        if (res && res.ok && Array.isArray(res.baskets)) {
+          // フォーマット変換
+          baskets = res.baskets.map(b => {
+            const t = new Date(b.confirmed_at);
+            const timeStr = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+            return {
+              basketId: b.basket_id,
+              time: timeStr,
+              items: b.items.map(i => ({ name: i.name, qty: i.qty })),
+              recorder: b.recorder,
+              confirmed_at: b.confirmed_at,
+            };
+          });
+          dataSource = 'sheet';
+        }
+      } catch (err) {
+        console.warn('Sheets集計取得失敗、ローカルデータで代用:', err);
+      }
+    }
+
+    renderSummary(isEndOfDay, baskets, dataSource);
   }
   function closeSummary() {
     document.getElementById('summaryScreen').classList.remove('open');
   }
 
-  function renderSummary(isEndOfDay) {
+  function renderSummary(isEndOfDay, baskets, dataSource) {
     const titleEl = document.getElementById('summaryTitle');
     const body = document.getElementById('summaryBody');
     titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
 
-    if (recentBaskets.length === 0) {
+    if (!baskets || baskets.length === 0) {
       body.innerHTML = '<div class="summary-empty">本日の記録はまだありません<br>記録を始めると、ここに集計が表示されます</div>';
       return;
     }
 
     // 集計
-    const totalBaskets = recentBaskets.length;
-    const totalItems = recentBaskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
+    const totalBaskets = baskets.length;
+    const totalItems = baskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
     const avgItemsPerBasket = (totalItems / totalBaskets).toFixed(1);
 
     // 営業時間の算出
-    const times = recentBaskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
+    const times = baskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
     let timeRangeStr = '—';
     let durationStr = '—';
     if (times.length > 0) {
@@ -2266,7 +2299,7 @@
 
     // 商品別集計
     const productMap = {};
-    recentBaskets.forEach(b => {
+    baskets.forEach(b => {
       b.items.forEach(i => {
         if (!productMap[i.name]) productMap[i.name] = 0;
         productMap[i.name] += i.qty;
@@ -2279,13 +2312,12 @@
 
     // 時間帯別集計(0-23時)
     const hourlyCounts = new Array(24).fill(0);
-    recentBaskets.forEach(b => {
+    baskets.forEach(b => {
       if (!b.confirmed_at) return;
       const h = new Date(b.confirmed_at).getHours();
       const qty = b.items.reduce((s, i) => s + i.qty, 0);
       hourlyCounts[h] += qty;
     });
-    // 営業時間の範囲だけ抽出(0杯の時間も間に挟む)
     let firstHour = -1, lastHour = -1;
     for (let h = 0; h < 24; h++) {
       if (hourlyCounts[h] > 0) {
@@ -2295,7 +2327,6 @@
     }
     const maxHourly = Math.max(...hourlyCounts, 1);
 
-    // HTML生成
     let html = '';
 
     if (isEndOfDay) {
@@ -2305,6 +2336,13 @@
       html += '<div class="summary-greeting">' +
         '<div class="summary-greeting-title">おつかれさまでした 🌙</div>' +
         '<div class="summary-greeting-sub">' + dateStr + ' の営業を終了しました</div>' +
+      '</div>';
+    }
+
+    // データソース表示(ローカルだけの場合は警告)
+    if (dataSource === 'local') {
+      html += '<div style="background:rgba(217,97,78,0.08); border:1px solid rgba(217,97,78,0.2); border-radius:12px; padding:10px 12px; margin-bottom:12px; font-size:12px; color:var(--red); text-align:center;">' +
+        'オフラインのため、この端末の記録のみ表示しています' +
       '</div>';
     }
 
@@ -2353,7 +2391,6 @@
     if (firstHour === -1) {
       html += '<div class="hourly-empty">時刻データがありません</div>';
     } else {
-      // ピーク時間特定
       let peakHour = firstHour;
       for (let h = firstHour; h <= lastHour; h++) {
         if (hourlyCounts[h] > hourlyCounts[peakHour]) peakHour = h;
