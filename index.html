@@ -1883,6 +1883,8 @@
         await sendToServer('reorderProducts', {
           data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
         });
+        await fetchMasters(false); // Sheetsから最新を再取得
+        renderAdminList();
       } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'down' && idx < PRODUCTS.length - 1) {
       const tmp = PRODUCTS[idx + 1]; PRODUCTS[idx + 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
@@ -1893,6 +1895,8 @@
         await sendToServer('reorderProducts', {
           data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
         });
+        await fetchMasters(false);
+        renderAdminList();
       } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'toggle') {
       product.active = !product.active;
@@ -1900,8 +1904,9 @@
       renderAdminList();
       try {
         await sendToServer('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+        await fetchMasters(false);
+        renderAdminList();
       } catch (err) {
-        // ロールバック
         product.active = !product.active;
         saveProducts(PRODUCTS);
         renderAdminList();
@@ -1913,8 +1918,7 @@
       if (confirm('「' + product.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
         try {
           await sendToServer('deleteProduct', { productId: id });
-          PRODUCTS.splice(idx, 1);
-          saveProducts(PRODUCTS);
+          await fetchMasters(false); // Sheetsから最新を再取得して、削除が確実に反映されたことを確認
           renderAdminList();
           showSnackbar('削除しました');
         } catch (err) {
@@ -1949,15 +1953,13 @@
         const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
         const newProduct = { id: id, name: name, active: true, display_order: maxOrder + 1 };
         await sendToServer('upsertProduct', { data: newProduct });
-        PRODUCTS.push(newProduct);
       } else {
         const product = PRODUCTS.find(p => p.id === editingProductId);
         if (product) {
           await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active } });
-          product.name = name;
         }
       }
-      saveProducts(PRODUCTS);
+      await fetchMasters(false); // Sheetsから最新を取得
       closeEditModal();
       renderAdminList();
     } catch (err) {
@@ -2013,6 +2015,8 @@
         await sendToServer('reorderRecorders', {
           data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
         });
+        await fetchMasters(false);
+        renderRecorderAdminList();
       } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'down' && idx < RECORDERS.length - 1) {
       const tmp = RECORDERS[idx + 1]; RECORDERS[idx + 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
@@ -2023,6 +2027,8 @@
         await sendToServer('reorderRecorders', {
           data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
         });
+        await fetchMasters(false);
+        renderRecorderAdminList();
       } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'toggle') {
       rec.active = !rec.active;
@@ -2030,6 +2036,8 @@
       renderRecorderAdminList();
       try {
         await sendToServer('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
+        await fetchMasters(false);
+        renderRecorderAdminList();
       } catch (err) {
         rec.active = !rec.active;
         saveRecorders(RECORDERS);
@@ -2042,8 +2050,7 @@
       if (confirm('「' + rec.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
         try {
           await sendToServer('deleteRecorder', { recorderId: id });
-          RECORDERS.splice(idx, 1);
-          saveRecorders(RECORDERS);
+          await fetchMasters(false);
           renderRecorderAdminList();
           showSnackbar('削除しました');
         } catch (err) {
@@ -2073,25 +2080,24 @@
     saveBtn.textContent = '送信中...';
 
     try {
+      let oldName = null;
       if (editingRecorderId === null) {
         const id = 'r_' + Date.now();
         const maxOrder = RECORDERS.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
         const newRec = { id: id, name: name, active: true, display_order: maxOrder + 1 };
         await sendToServer('upsertRecorder', { data: newRec });
-        RECORDERS.push(newRec);
       } else {
         const rec = RECORDERS.find(r => r.id === editingRecorderId);
         if (rec) {
+          oldName = rec.name;
           await sendToServer('upsertRecorder', { data: { id: rec.id, name: name, active: rec.active } });
-          const oldName = rec.name;
-          rec.name = name;
           if (oldName === recorder) {
             recorder = name;
             saveRecorder(recorder);
           }
         }
       }
-      saveRecorders(RECORDERS);
+      await fetchMasters(false);
       closeRecorderEditModal();
       renderRecorderAdminList();
     } catch (err) {
