@@ -10,1208 +10,472 @@
 <title>POSSIBLE COFFEE タリー</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  /* ============================================================
-     POSSIBLE COFFEE タリー - iOS-inspired Design System
-     ============================================================ */
-
   :root {
-    /* Colors — iOS-style systemized palette with POSSIBLE warmth */
     --bg-primary: #F2EFEA;
     --bg-secondary: #FBF9F5;
     --bg-grouped: #EDE8E0;
     --bg-elevated: #FFFFFF;
     --bg-glass: rgba(251, 249, 245, 0.72);
-
     --label-primary: #1C1A17;
     --label-secondary: rgba(28, 26, 23, 0.6);
     --label-tertiary: rgba(28, 26, 23, 0.3);
     --label-quaternary: rgba(28, 26, 23, 0.15);
-
     --fill-primary: rgba(120, 105, 85, 0.14);
     --fill-secondary: rgba(120, 105, 85, 0.08);
     --fill-tertiary: rgba(120, 105, 85, 0.05);
-
     --separator: rgba(60, 50, 40, 0.08);
     --separator-opaque: #E6E0D5;
-
     --accent: #1C1A17;
     --accent-soft: #3D3832;
     --accent-warm: #6B4E2E;
-
     --green: #30A46C;
     --orange: #E8A23D;
     --red: #D9614E;
-
-    /* Depth — layered soft shadows */
     --shadow-xs: 0 1px 2px rgba(28, 26, 23, 0.04);
     --shadow-sm: 0 1px 3px rgba(28, 26, 23, 0.05), 0 1px 2px rgba(28, 26, 23, 0.03);
     --shadow-md: 0 4px 12px rgba(28, 26, 23, 0.06), 0 1px 3px rgba(28, 26, 23, 0.04);
     --shadow-lg: 0 10px 32px rgba(28, 26, 23, 0.08), 0 4px 12px rgba(28, 26, 23, 0.05);
     --shadow-xl: 0 20px 50px rgba(28, 26, 23, 0.12), 0 8px 20px rgba(28, 26, 23, 0.06);
-
-    /* Radii */
-    --r-xs: 8px;
-    --r-sm: 12px;
-    --r-md: 16px;
-    --r-lg: 20px;
-    --r-xl: 28px;
-    --r-full: 999px;
-
-    /* Motion */
+    --r-xs: 8px; --r-sm: 12px; --r-md: 16px; --r-lg: 20px; --r-xl: 28px; --r-full: 999px;
     --ease-ios: cubic-bezier(0.28, 0.11, 0.32, 1);
     --ease-ios-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; overflow: hidden; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-                 "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
-    font-feature-settings: "ss01", "cv01", "cv11";
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
     letter-spacing: -0.01em;
     color: var(--label-primary);
     background: #1a0f08;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    -webkit-user-select: none;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
     overscroll-behavior: none;
   }
-
-  /* ============================================================
-     Phone frame
-     ============================================================ */
   .phone-frame {
-    width: 100%;
-    max-width: 430px;
-    height: 100vh;
-    height: 100dvh; /* dynamic viewport for mobile browsers */
-    max-height: 100vh;
-    max-height: 100dvh;
+    width: 100%; max-width: 430px; height: 100vh; height: 100dvh;
+    max-height: 100vh; max-height: 100dvh;
     background: var(--bg-primary);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
+    display: flex; flex-direction: column; overflow: hidden; position: relative;
     padding-top: env(safe-area-inset-top);
   }
-
-  /* Ambient warm glow — extremely subtle */
   .phone-frame::before {
-    content: '';
-    position: absolute;
-    top: -120px;
-    left: -60px;
-    width: 340px;
-    height: 340px;
+    content: ''; position: absolute; top: -120px; left: -60px; width: 340px; height: 340px;
     background: radial-gradient(circle, rgba(215, 170, 110, 0.15), transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
   .phone-frame::after {
-    content: '';
-    position: absolute;
-    bottom: -140px;
-    right: -80px;
-    width: 360px;
-    height: 360px;
+    content: ''; position: absolute; bottom: -140px; right: -80px; width: 360px; height: 360px;
     background: radial-gradient(circle, rgba(139, 100, 60, 0.12), transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
-
   @media (min-width: 500px) {
     .phone-frame {
-      max-height: 900px;
-      border-radius: 44px;
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4),
-                  0 16px 32px rgba(0, 0, 0, 0.25),
-                  inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-      margin: 20px 0;
-      padding-top: 0;
+      max-height: 900px; border-radius: 44px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 16px 32px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.05);
+      margin: 20px 0; padding-top: 0;
     }
   }
-
-  /* ============================================================
-     Status bar (top, translucent)
-     ============================================================ */
   .status-bar {
-    position: relative;
-    z-index: 10;
-    padding: 12px 16px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    position: relative; z-index: 10; padding: 12px 16px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
     background: var(--bg-glass);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 0.5px solid var(--separator);
-    flex-shrink: 0;
+    backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator); flex-shrink: 0;
   }
-
-  .menu-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--r-full);
-    border: none;
-    background: var(--fill-secondary);
-    color: var(--label-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.18s var(--ease-ios);
-  }
-  .menu-btn:active {
-    background: var(--fill-primary);
-    transform: scale(0.92);
-  }
-
-  .stat-center {
-    text-align: center;
-    flex: 1;
-    min-width: 0;
-  }
-  .stat-label {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    letter-spacing: 0.2px;
-    margin-bottom: 1px;
-  }
-  .stat-value {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
-    font-variant-numeric: tabular-nums;
-  }
+  .menu-btn { width: 40px; height: 40px; border-radius: var(--r-full); border: none;
+    background: var(--fill-secondary); color: var(--label-primary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all 0.18s var(--ease-ios); }
+  .menu-btn:active { background: var(--fill-primary); transform: scale(0.92); }
+  .stat-center { text-align: center; flex: 1; min-width: 0; }
+  .stat-label { font-size: 10px; font-weight: 500; color: var(--label-secondary); margin-bottom: 1px; }
+  .stat-value { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; font-variant-numeric: tabular-nums; }
   .stat-value span { font-weight: 700; }
-
   .sync-badge {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 10px 6px 8px;
-    border-radius: var(--r-full);
-    background: var(--fill-secondary);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--label-primary);
-    flex-shrink: 0;
-    white-space: nowrap;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    transition: background 0.15s;
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 10px 6px 8px; border-radius: var(--r-full);
+    background: var(--fill-secondary); font-size: 11px; font-weight: 500;
+    color: var(--label-primary); flex-shrink: 0; white-space: nowrap;
+    cursor: pointer; border: none; font-family: inherit; transition: background 0.15s;
   }
   .sync-badge:active { background: var(--fill-primary); }
-  .sync-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: var(--r-full);
-    background: var(--green);
-    box-shadow: 0 0 0 0 currentColor;
-    animation: dotPulse 2.6s ease-out infinite;
-  }
-  @keyframes dotPulse {
-    0% { box-shadow: 0 0 0 0 rgba(48, 164, 108, 0.5); }
-    80% { box-shadow: 0 0 0 6px rgba(48, 164, 108, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(48, 164, 108, 0); }
-  }
+  .sync-dot { width: 8px; height: 8px; border-radius: var(--r-full); background: var(--green); }
 
-  /* ============================================================
-     Menu overlay (sheet from top)
-     ============================================================ */
+  /* メニュー */
   .menu-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(28, 26, 23, 0.3);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 30;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.25s var(--ease-ios);
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(28,26,23,0.3);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    z-index: 30; display: none; opacity: 0; transition: opacity 0.25s var(--ease-ios);
   }
   .menu-overlay.open { display: block; opacity: 1; }
   .menu-panel {
-    position: absolute;
-    top: 8px;
-    left: 12px;
-    right: 12px;
-    background: var(--bg-elevated);
-    padding: 18px;
-    border-radius: var(--r-lg);
+    position: absolute; top: 8px; left: 12px; right: 12px;
+    background: var(--bg-elevated); padding: 18px; border-radius: var(--r-lg);
     box-shadow: var(--shadow-lg);
     animation: menuSlide 0.35s var(--ease-ios-out);
+    max-height: calc(100dvh - 32px); overflow-y: auto;
   }
-  @keyframes menuSlide {
-    from { opacity: 0; transform: translateY(-12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
+  @keyframes menuSlide { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
   .menu-label {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--label-tertiary);
-    margin-bottom: 10px;
-    padding: 0 4px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--label-tertiary); margin-bottom: 10px; padding: 0 4px;
   }
   .recorder-group {
-    display: flex;
-    gap: 6px;
-    padding: 3px;
-    background: var(--fill-secondary);
-    border-radius: var(--r-sm);
-    margin-bottom: 16px;
+    display: flex; gap: 6px; padding: 3px;
+    background: var(--fill-secondary); border-radius: var(--r-sm); margin-bottom: 12px;
+    flex-wrap: wrap;
   }
   .recorder-btn {
-    flex: 1;
-    padding: 10px 12px;
-    border: none;
-    border-radius: calc(var(--r-sm) - 3px);
-    background: transparent;
-    color: var(--label-secondary);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
+    flex: 1 1 auto; min-width: 80px; padding: 10px 12px; border: none;
+    border-radius: calc(var(--r-sm) - 3px); background: transparent; color: var(--label-secondary);
+    font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
     transition: all 0.18s var(--ease-ios);
   }
   .recorder-btn.active {
-    background: var(--bg-elevated);
-    color: var(--label-primary);
-    font-weight: 600;
+    background: var(--bg-elevated); color: var(--label-primary); font-weight: 600;
     box-shadow: var(--shadow-sm);
   }
-
   .end-btn {
-    width: 100%;
-    padding: 13px;
-    background: var(--fill-secondary);
-    border: none;
-    border-radius: var(--r-sm);
-    color: var(--label-primary);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 6px;
+    width: 100%; padding: 13px; background: var(--fill-secondary); border: none;
+    border-radius: var(--r-sm); color: var(--label-primary); font-family: inherit;
+    font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 6px;
     transition: background 0.18s var(--ease-ios);
   }
   .end-btn:active { background: var(--fill-primary); }
   .menu-close {
-    width: 100%;
-    padding: 12px;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--label-secondary);
-    cursor: pointer;
-    margin-top: 4px;
+    width: 100%; padding: 12px; background: none; border: none;
+    font-family: inherit; font-size: 13px; color: var(--label-secondary); cursor: pointer; margin-top: 4px;
   }
 
-  /* ============================================================
-     Product grid
-     ============================================================ */
-  .products {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px 14px 8px;
-    position: relative;
-    z-index: 1;
-    -webkit-overflow-scrolling: touch;
-  }
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--label-tertiary);
-    padding: 0 4px 8px;
-  }
-  .product-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+  /* 商品 */
+  .products { flex: 1; overflow-y: auto; padding: 14px 14px 8px; position: relative; z-index: 1; -webkit-overflow-scrolling: touch; }
+  .section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--label-tertiary); padding: 0 4px 8px; }
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .product-btn {
-    position: relative;
-    height: 80px;
-    background: var(--bg-elevated);
-    border: none;
-    border-radius: var(--r-md);
-    color: var(--label-primary);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: -0.2px;
-    cursor: pointer;
+    position: relative; height: 80px;
+    background: var(--bg-elevated); border: none; border-radius: var(--r-md);
+    color: var(--label-primary); font-family: inherit; font-size: 15px; font-weight: 500;
+    letter-spacing: -0.2px; cursor: pointer;
     box-shadow: var(--shadow-sm);
     transition: all 0.22s var(--ease-ios);
-    overflow: hidden;
-    padding: 0 8px;
+    overflow: hidden; padding: 0 8px;
   }
   .product-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent 40%);
-    pointer-events: none;
-    opacity: 0.6;
+    pointer-events: none; opacity: 0.6;
   }
-  .product-btn:active {
-    transform: scale(0.96);
-    box-shadow: var(--shadow-xs);
-  }
+  .product-btn:active { transform: scale(0.96); box-shadow: var(--shadow-xs); }
   .product-btn.in-cart {
-    background: var(--accent);
-    color: #FFFFFF;
-    box-shadow: 0 8px 20px rgba(28, 26, 23, 0.25), 0 2px 6px rgba(28, 26, 23, 0.15);
-    font-weight: 600;
+    background: var(--accent); color: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(28,26,23,0.25), 0 2px 6px rgba(28,26,23,0.15); font-weight: 600;
   }
-  .product-btn.in-cart::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
-  }
+  .product-btn.in-cart::before { background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%); }
   .qty-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 6px;
-    border-radius: var(--r-full);
-    background: #FFFFFF;
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute; top: 8px; right: 8px; min-width: 22px; height: 22px; padding: 0 6px;
+    border-radius: var(--r-full); background: #FFFFFF; color: var(--accent);
+    font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     animation: badgePop 0.3s var(--ease-ios-out);
   }
-  @keyframes badgePop {
-    0% { transform: scale(0); }
-    60% { transform: scale(1.15); }
-    100% { transform: scale(1); }
-  }
+  @keyframes badgePop { 0% { transform: scale(0); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-  /* ============================================================
-     Cart
-     ============================================================ */
-  .cart-section {
-    position: relative;
-    z-index: 1;
-    padding: 0 14px;
-    flex-shrink: 0;
-  }
-  .cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 6px 4px 8px;
-  }
-  .cart-recorder {
-    font-size: 11px;
-    color: var(--label-tertiary);
-    letter-spacing: 0.2px;
-  }
-  .cart-empty {
-    padding: 14px;
-    text-align: center;
-    font-size: 13px;
-    color: var(--label-tertiary);
-    background: var(--fill-tertiary);
-    border-radius: var(--r-md);
-  }
+  /* カート */
+  .cart-section { position: relative; z-index: 1; padding: 0 14px; flex-shrink: 0; }
+  .cart-header { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 4px 8px; }
+  .cart-recorder { font-size: 11px; color: var(--label-tertiary); }
+  .cart-empty { padding: 14px; text-align: center; font-size: 13px; color: var(--label-tertiary); background: var(--fill-tertiary); border-radius: var(--r-md); }
   .cart-items {
-    max-height: 130px;
-    overflow-y: auto;
-    background: var(--bg-elevated);
-    border-radius: var(--r-md);
-    box-shadow: var(--shadow-sm);
+    max-height: 130px; overflow-y: auto;
+    background: var(--bg-elevated); border-radius: var(--r-md); box-shadow: var(--shadow-sm);
     -webkit-overflow-scrolling: touch;
   }
   .cart-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
     border-bottom: 0.5px solid var(--separator);
     animation: rowIn 0.25s var(--ease-ios-out);
   }
   .cart-item:last-child { border-bottom: none; }
-  @keyframes rowIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .cart-item-name {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--label-primary);
-    letter-spacing: -0.2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .qty-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--r-full);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 17px;
-    font-weight: 500;
-    transition: all 0.15s var(--ease-ios);
-  }
+  @keyframes rowIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .cart-item-name { flex: 1; font-size: 15px; font-weight: 500; color: var(--label-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qty-btn { width: 32px; height: 32px; border-radius: var(--r-full); border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-family: inherit; font-size: 17px; font-weight: 500;
+    transition: all 0.15s var(--ease-ios); }
   .qty-btn:active { transform: scale(0.88); }
-  .qty-btn.minus {
-    background: var(--fill-secondary);
-    color: var(--label-primary);
-  }
-  .qty-btn.plus {
-    background: var(--accent);
-    color: #FFFFFF;
-  }
-  .qty-display {
-    min-width: 24px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    color: var(--label-primary);
-  }
-  .remove-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: var(--r-full);
-    border: none;
-    background: transparent;
-    color: var(--label-tertiary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 300;
-    transition: color 0.15s;
-  }
+  .qty-btn.minus { background: var(--fill-secondary); color: var(--label-primary); }
+  .qty-btn.plus { background: var(--accent); color: #FFFFFF; }
+  .qty-display { min-width: 24px; text-align: center; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .remove-btn { width: 30px; height: 30px; border-radius: var(--r-full); border: none;
+    background: transparent; color: var(--label-tertiary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 22px; }
   .remove-btn:active { color: var(--red); }
 
-  /* ============================================================
-     Recent records
-     ============================================================ */
-  .recent-section {
-    position: relative;
-    z-index: 1;
-    padding: 6px 14px 0;
-    flex-shrink: 0;
-  }
+  /* 直近の記録 */
+  .recent-section { position: relative; z-index: 1; padding: 6px 14px 0; flex-shrink: 0; }
   .recent-toggle {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 9px 14px;
-    background: var(--fill-tertiary);
-    border: none;
-    border-radius: var(--r-sm);
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    cursor: pointer;
-    transition: background 0.15s;
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 14px; background: var(--fill-tertiary); border: none; border-radius: var(--r-sm);
+    font-family: inherit; font-size: 12px; font-weight: 500; color: var(--label-secondary); cursor: pointer;
   }
-  .recent-toggle:active { background: var(--fill-secondary); }
-  .chevron {
-    font-size: 10px;
-    color: var(--label-tertiary);
-    transition: transform 0.25s var(--ease-ios);
-  }
+  .chevron { font-size: 10px; color: var(--label-tertiary); transition: transform 0.25s var(--ease-ios); }
   .chevron.expanded { transform: rotate(180deg); }
-
-  .recent-list {
-    display: none;
-    padding: 8px 0 0;
-    max-height: 140px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  .recent-list { display: none; padding: 8px 0 0; max-height: 140px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .recent-list.open { display: block; }
   .recent-item {
-    background: var(--bg-elevated);
-    border-radius: var(--r-sm);
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    box-shadow: var(--shadow-xs);
-    transition: all 0.18s var(--ease-ios);
+    background: var(--bg-elevated); border-radius: var(--r-sm); padding: 10px 12px;
+    margin-bottom: 6px; cursor: pointer; box-shadow: var(--shadow-xs);
   }
-  .recent-item:active {
-    transform: scale(0.98);
-    background: var(--fill-tertiary);
-  }
-  .recent-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3px;
-  }
-  .recent-time {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    font-variant-numeric: tabular-nums;
-  }
-  .recent-hint {
-    font-size: 10px;
-    color: var(--label-tertiary);
-  }
-  .recent-items-text {
-    font-size: 13px;
-    color: var(--label-primary);
-    letter-spacing: -0.1px;
-  }
+  .recent-item:active { transform: scale(0.98); background: var(--fill-tertiary); }
+  .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .recent-time { font-size: 11px; font-weight: 500; color: var(--label-secondary); font-variant-numeric: tabular-nums; }
+  .recent-hint { font-size: 10px; color: var(--label-tertiary); }
+  .recent-items-text { font-size: 13px; color: var(--label-primary); }
+  .recent-loading { text-align: center; padding: 16px; color: var(--label-tertiary); font-size: 12px; }
 
-  /* ============================================================
-     Record button
-     ============================================================ */
-  .record-section {
-    position: relative;
-    z-index: 1;
-    padding: 12px 14px 12px;
-    padding-bottom: max(14px, env(safe-area-inset-bottom));
-    flex-shrink: 0;
-  }
+  /* 記録ボタン */
+  .record-section { position: relative; z-index: 1; padding: 12px 14px 12px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom)); flex-shrink: 0; }
   .record-btn {
-    width: 100%;
-    height: 56px;
-    border: none;
-    border-radius: var(--r-md);
-    background: var(--accent);
-    color: #FFFFFF;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
+    width: 100%; height: 56px; border: none; border-radius: var(--r-md);
+    background: var(--accent); color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 10px 24px rgba(28, 26, 23, 0.25), 0 2px 6px rgba(28, 26, 23, 0.15);
+    box-shadow: 0 10px 24px rgba(28,26,23,0.25), 0 2px 6px rgba(28,26,23,0.15);
     transition: all 0.2s var(--ease-ios);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .record-btn:active:not(:disabled) {
     transform: scale(0.98) translateY(1px);
-    box-shadow: 0 4px 12px rgba(28, 26, 23, 0.2), 0 1px 3px rgba(28, 26, 23, 0.15);
+    box-shadow: 0 4px 12px rgba(28,26,23,0.2), 0 1px 3px rgba(28,26,23,0.15);
   }
-  .record-btn:disabled {
-    background: var(--fill-primary);
-    color: var(--label-tertiary);
-    box-shadow: none;
-    cursor: not-allowed;
-  }
+  .record-btn:disabled { background: var(--fill-primary); color: var(--label-tertiary); box-shadow: none; }
 
-  /* ============================================================
-     Snackbar
-     ============================================================ */
+  /* スナックバー */
   .snackbar {
-    position: absolute;
-    bottom: 96px;
-    left: 50%;
-    transform: translateX(-50%) translateY(8px);
-    background: var(--accent);
-    color: #FFFFFF;
-    padding: 11px 18px;
-    border-radius: var(--r-full);
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: -0.1px;
+    position: absolute; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(8px);
+    background: var(--accent); color: #FFFFFF; padding: 11px 18px;
+    border-radius: var(--r-full); font-size: 14px; font-weight: 500;
     box-shadow: var(--shadow-xl);
-    z-index: 40;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s var(--ease-ios-out);
-    white-space: nowrap;
+    z-index: 40; opacity: 0; pointer-events: none;
+    transition: all 0.3s var(--ease-ios-out); white-space: nowrap;
   }
-  .snackbar.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  .snackbar.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .snackbar.error {
     background: var(--red);
-    box-shadow: 0 12px 32px rgba(217, 97, 78, 0.4), var(--shadow-lg);
-    white-space: normal;
-    text-align: center;
-    max-width: calc(100% - 32px);
+    box-shadow: 0 12px 32px rgba(217,97,78,0.4), var(--shadow-lg);
+    white-space: normal; text-align: center; max-width: calc(100% - 32px);
   }
 
-  /* ============================================================
-     Admin screen
-     ============================================================ */
+  /* 管理画面共通 */
   .admin-screen {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg-primary);
-    z-index: 50;
-    display: none;
-    flex-direction: column;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-primary); z-index: 50; display: none; flex-direction: column;
+    padding-top: env(safe-area-inset-top);
     animation: slideUp 0.35s var(--ease-ios-out);
   }
   .admin-screen.open { display: flex; }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .admin-header {
-    padding: 14px 20px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-glass);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 0.5px solid var(--separator);
-    flex-shrink: 0;
+    padding: 14px 20px 12px; display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-glass); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator); flex-shrink: 0;
   }
-  .admin-title {
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
+  .admin-title { font-size: 17px; font-weight: 600; }
   .admin-close-btn {
-    background: var(--fill-secondary);
-    border: none;
-    color: var(--label-primary);
-    width: 36px;
-    height: 36px;
-    border-radius: var(--r-full);
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s var(--ease-ios);
+    background: var(--fill-secondary); border: none; color: var(--label-primary);
+    width: 36px; height: 36px; border-radius: var(--r-full); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center;
   }
-  .admin-close-btn:active {
-    background: var(--fill-primary);
-    transform: scale(0.92);
-  }
-  .admin-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .admin-list-empty {
-    padding: 50px 20px;
-    text-align: center;
-    color: var(--label-tertiary);
-    font-size: 14px;
-    line-height: 1.6;
-  }
+  .admin-close-btn:active { background: var(--fill-primary); transform: scale(0.92); }
+  .admin-list { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+  .admin-list-empty { padding: 50px 20px; text-align: center; color: var(--label-tertiary); font-size: 14px; line-height: 1.7; }
   .admin-item {
-    background: var(--bg-elevated);
-    border-radius: var(--r-md);
-    padding: 12px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: var(--shadow-sm);
-    transition: opacity 0.2s;
+    background: var(--bg-elevated); border-radius: var(--r-md); padding: 12px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm);
   }
   .admin-item.inactive { opacity: 0.5; }
-
-  .reorder-group {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+  .reorder-group { display: flex; flex-direction: column; gap: 2px; }
   .reorder-btn {
-    width: 28px;
-    height: 22px;
-    border: none;
-    background: var(--fill-secondary);
-    border-radius: 6px;
-    font-size: 9px;
-    cursor: pointer;
-    color: var(--label-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 28px; height: 22px; border: none; background: var(--fill-secondary);
+    border-radius: 6px; font-size: 9px; cursor: pointer; color: var(--label-primary);
+    display: flex; align-items: center; justify-content: center;
   }
   .reorder-btn:disabled { opacity: 0.25; }
-  .reorder-btn:active:not(:disabled) {
-    background: var(--fill-primary);
-    transform: scale(0.92);
-  }
-
-  .admin-item-body {
-    flex: 1;
-    min-width: 0;
-  }
-  .admin-item-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--label-primary);
-    letter-spacing: -0.2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
+  .reorder-btn:active:not(:disabled) { background: var(--fill-primary); transform: scale(0.92); }
+  .admin-item-body { flex: 1; min-width: 0; }
+  .admin-item-title { font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .toggle-switch {
-    width: 44px;
-    height: 26px;
-    border-radius: var(--r-full);
-    background: var(--label-quaternary);
-    position: relative;
-    cursor: pointer;
-    border: none;
-    flex-shrink: 0;
+    width: 44px; height: 26px; border-radius: var(--r-full); background: var(--label-quaternary);
+    position: relative; cursor: pointer; border: none; flex-shrink: 0;
     transition: background 0.25s var(--ease-ios);
   }
   .toggle-switch.on { background: var(--green); }
   .toggle-switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 22px;
-    border-radius: var(--r-full);
-    background: #FFFFFF;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1);
-    transition: transform 0.25s var(--ease-ios);
+    content: ''; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px;
+    border-radius: var(--r-full); background: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: transform 0.25s var(--ease-ios);
   }
   .toggle-switch.on::after { transform: translateX(18px); }
-
   .admin-icon-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--r-full);
-    border: none;
-    background: var(--fill-secondary);
-    cursor: pointer;
-    color: var(--label-primary);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s var(--ease-ios);
+    width: 34px; height: 34px; border-radius: var(--r-full); border: none;
+    background: var(--fill-secondary); cursor: pointer; color: var(--label-primary);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
   }
-  .admin-icon-btn:active {
-    background: var(--fill-primary);
-    transform: scale(0.92);
-  }
+  .admin-icon-btn:active { background: var(--fill-primary); transform: scale(0.92); }
   .admin-icon-btn.danger { color: var(--red); }
-
   .add-btn {
-    margin: 6px 16px 16px;
-    margin-bottom: max(16px, env(safe-area-inset-bottom));
-    padding: 15px;
-    background: var(--accent);
-    color: #FFFFFF;
-    border: none;
-    border-radius: var(--r-md);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
+    margin: 6px 16px 16px; margin-bottom: max(16px, env(safe-area-inset-bottom));
+    padding: 15px; background: var(--accent); color: #FFFFFF; border: none;
+    border-radius: var(--r-md); font-family: inherit; font-size: 15px; font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(28, 26, 23, 0.2), 0 2px 6px rgba(28, 26, 23, 0.12);
-    transition: all 0.2s var(--ease-ios);
+    box-shadow: 0 8px 20px rgba(28,26,23,0.2), 0 2px 6px rgba(28,26,23,0.12);
   }
-  .add-btn:active {
-    transform: scale(0.98) translateY(1px);
-    box-shadow: 0 4px 10px rgba(28, 26, 23, 0.15);
-  }
+  .add-btn:active { transform: scale(0.98) translateY(1px); }
 
-  /* ============================================================
-     Modal
-     ============================================================ */
+  /* モーダル(ボトムシート) */
   .edit-modal-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(28, 26, 23, 0.45);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 60;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0;
-    opacity: 0;
-    transition: opacity 0.25s var(--ease-ios);
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(28,26,23,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 60; display: none; align-items: flex-end; justify-content: center;
+    opacity: 0; transition: opacity 0.25s var(--ease-ios);
   }
-  .edit-modal-overlay.open {
-    display: flex;
-    opacity: 1;
-  }
+  .edit-modal-overlay.open { display: flex; opacity: 1; }
   .edit-modal {
-    background: var(--bg-secondary);
-    border-radius: var(--r-xl) var(--r-xl) 0 0;
-    padding: 22px 20px;
-    padding-bottom: max(24px, env(safe-area-inset-bottom));
-    width: 100%;
-    max-width: 430px;
+    background: var(--bg-secondary); border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding: 22px 20px; padding-bottom: max(24px, env(safe-area-inset-bottom));
+    width: 100%; max-width: 430px;
     box-shadow: var(--shadow-xl);
     animation: sheetUp 0.35s var(--ease-ios-out);
+    max-height: 85dvh; overflow-y: auto;
   }
-  @keyframes sheetUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
+  @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .edit-modal::before {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 5px;
-    background: var(--label-quaternary);
-    border-radius: var(--r-full);
-    margin: -8px auto 16px;
+    content: ''; display: block; width: 36px; height: 5px;
+    background: var(--label-quaternary); border-radius: var(--r-full); margin: -8px auto 16px;
   }
-  .edit-modal-title {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 18px;
-    color: var(--label-primary);
-    text-align: center;
-    letter-spacing: -0.3px;
-  }
+  .edit-modal-title { font-size: 17px; font-weight: 600; margin-bottom: 18px; text-align: center; }
   .edit-field { margin-bottom: 16px; }
   .edit-field-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--label-tertiary);
-    margin-bottom: 8px;
-    padding: 0 4px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--label-tertiary); margin-bottom: 8px; padding: 0 4px;
   }
-  .edit-input {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: var(--r-sm);
-    background: var(--bg-elevated);
-    font-family: inherit;
-    font-size: 16px;
-    color: var(--label-primary);
-    outline: none;
-    box-shadow: inset 0 0 0 1px var(--separator);
-    transition: box-shadow 0.2s;
-    letter-spacing: -0.2px;
+  .edit-input, .edit-textarea {
+    width: 100%; padding: 14px; border: none; border-radius: var(--r-sm);
+    background: var(--bg-elevated); font-family: inherit; font-size: 16px;
+    color: var(--label-primary); outline: none;
+    box-shadow: inset 0 0 0 1px var(--separator); transition: box-shadow 0.2s;
   }
-  .edit-input:focus {
-    box-shadow: inset 0 0 0 2px var(--accent);
-  }
-
-  .edit-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 20px;
-  }
+  .edit-input:focus, .edit-textarea:focus { box-shadow: inset 0 0 0 2px var(--accent); }
+  .edit-textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+  .edit-actions { display: flex; gap: 8px; margin-top: 20px; }
   .edit-btn {
-    flex: 1;
-    padding: 14px;
-    border-radius: var(--r-sm);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
-    cursor: pointer;
-    border: none;
+    flex: 1; padding: 14px; border-radius: var(--r-sm); font-family: inherit;
+    font-size: 15px; font-weight: 600; cursor: pointer; border: none;
     transition: all 0.15s var(--ease-ios);
   }
   .edit-btn:active { transform: scale(0.98); }
-  .edit-btn.cancel {
-    background: var(--fill-secondary);
-    color: var(--label-primary);
-  }
-  .edit-btn.save {
-    background: var(--accent);
-    color: #FFFFFF;
-    box-shadow: 0 6px 16px rgba(28, 26, 23, 0.2);
-  }
+  .edit-btn.cancel { background: var(--fill-secondary); color: var(--label-primary); }
+  .edit-btn.save { background: var(--accent); color: #FFFFFF; box-shadow: 0 6px 16px rgba(28,26,23,0.2); }
 
-  /* Scrollbar minimal */
   ::-webkit-scrollbar { width: 0; display: none; }
 
-  /* ============================================================
-     Summary screen (本日の集計)
-     ============================================================ */
+  /* 集計画面 */
   .summary-screen {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg-primary);
-    z-index: 55;
-    display: none;
-    flex-direction: column;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-primary); z-index: 55; display: none; flex-direction: column;
     padding-top: env(safe-area-inset-top);
     animation: slideUp 0.4s var(--ease-ios-out);
   }
   .summary-screen.open { display: flex; }
-
   .summary-header {
-    padding: 14px 20px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-glass);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 0.5px solid var(--separator);
-    flex-shrink: 0;
+    padding: 14px 20px 12px; display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-glass); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator); flex-shrink: 0;
   }
-  .summary-title {
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
+  .summary-title { font-size: 17px; font-weight: 600; }
   .summary-close-btn {
-    background: var(--fill-secondary);
-    border: none;
-    color: var(--label-primary);
-    width: 36px;
-    height: 36px;
-    border-radius: var(--r-full);
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: var(--fill-secondary); border: none; color: var(--label-primary);
+    width: 36px; height: 36px; border-radius: var(--r-full); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center;
   }
-  .summary-close-btn:active {
-    background: var(--fill-primary);
-    transform: scale(0.92);
-  }
-
+  .summary-close-btn:active { background: var(--fill-primary); transform: scale(0.92); }
   .summary-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 14px;
+    flex: 1; overflow-y: auto; padding: 16px 14px;
     padding-bottom: max(16px, env(safe-area-inset-bottom));
-    -webkit-overflow-scrolling: touch;
   }
-
-  .summary-greeting {
-    text-align: center;
-    padding: 8px 16px 18px;
-  }
-  .summary-greeting-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--label-primary);
-    margin-bottom: 4px;
-  }
-  .summary-greeting-sub {
-    font-size: 13px;
-    color: var(--label-secondary);
-    letter-spacing: -0.1px;
-  }
-
-  /* Summary card */
+  .summary-greeting { text-align: center; padding: 8px 16px 18px; }
+  .summary-greeting-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .summary-greeting-sub { font-size: 13px; color: var(--label-secondary); }
   .summary-card {
-    background: var(--bg-elevated);
-    border-radius: var(--r-md);
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow-sm);
+    background: var(--bg-elevated); border-radius: var(--r-md);
+    padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm);
   }
   .summary-card-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--label-tertiary);
-    margin-bottom: 12px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--label-tertiary); margin-bottom: 12px;
   }
-
-  /* A. Stat grid */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .stat-cell {
-    background: var(--fill-tertiary);
-    border-radius: var(--r-sm);
-    padding: 12px 14px;
-  }
-  .stat-cell-label {
-    font-size: 11px;
-    color: var(--label-secondary);
-    margin-bottom: 4px;
-    letter-spacing: -0.1px;
-  }
-  .stat-cell-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--label-primary);
-    letter-spacing: -0.5px;
-    font-variant-numeric: tabular-nums;
-  }
-  .stat-cell-unit {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--label-secondary);
-    margin-left: 2px;
-  }
-
-  /* B. Product ranking */
-  .ranking-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 0.5px solid var(--separator);
-  }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-cell { background: var(--fill-tertiary); border-radius: var(--r-sm); padding: 12px 14px; }
+  .stat-cell-label { font-size: 11px; color: var(--label-secondary); margin-bottom: 4px; }
+  .stat-cell-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+  .stat-cell-unit { font-size: 12px; font-weight: 500; color: var(--label-secondary); margin-left: 2px; }
+  .ranking-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--separator); }
   .ranking-row:last-child { border-bottom: none; }
   .ranking-rank {
-    width: 22px;
-    height: 22px;
-    border-radius: var(--r-full);
-    background: var(--fill-secondary);
-    color: var(--label-secondary);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
+    width: 22px; height: 22px; border-radius: var(--r-full);
+    background: var(--fill-secondary); color: var(--label-secondary);
+    font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-variant-numeric: tabular-nums;
   }
   .ranking-row.top1 .ranking-rank { background: var(--accent); color: #FFFFFF; }
-  .ranking-name {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--label-primary);
-    letter-spacing: -0.2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .ranking-bar-wrap {
-    flex: 1.2;
-    height: 6px;
-    background: var(--fill-tertiary);
-    border-radius: var(--r-full);
-    overflow: hidden;
-  }
-  .ranking-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: var(--r-full);
-    transition: width 0.6s var(--ease-ios-out);
-  }
-  .ranking-qty {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--label-primary);
-    font-variant-numeric: tabular-nums;
-    min-width: 50px;
-    text-align: right;
-  }
-  .ranking-qty .pct {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--label-tertiary);
-    margin-left: 3px;
-  }
-
-  /* C. Hourly distribution */
+  .ranking-name { flex: 1; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ranking-bar-wrap { flex: 1.2; height: 6px; background: var(--fill-tertiary); border-radius: var(--r-full); overflow: hidden; }
+  .ranking-bar { height: 100%; background: var(--accent); border-radius: var(--r-full); transition: width 0.6s var(--ease-ios-out); }
+  .ranking-qty { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 50px; text-align: right; }
+  .ranking-qty .pct { font-size: 10px; font-weight: 500; color: var(--label-tertiary); margin-left: 3px; }
   .hourly-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 100px;
-    padding: 6px 2px 0;
-    border-bottom: 1px solid var(--separator);
+    display: flex; align-items: flex-end; gap: 2px; height: 100px;
+    padding: 6px 2px 0; border-bottom: 1px solid var(--separator);
   }
-  .hourly-bar-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    justify-content: flex-end;
-    position: relative;
-  }
-  .hourly-bar-value {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--label-secondary);
-    margin-bottom: 2px;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-  .hourly-bar {
-    width: 100%;
-    background: var(--accent);
-    border-radius: 3px 3px 0 0;
-    min-height: 2px;
-    transition: height 0.6s var(--ease-ios-out);
-  }
+  .hourly-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .hourly-bar-value { font-size: 8px; font-weight: 600; color: var(--label-secondary); margin-bottom: 2px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .hourly-bar { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.6s var(--ease-ios-out); }
   .hourly-bar.peak { background: var(--accent-warm); }
-  .hourly-labels {
-    display: flex;
-    gap: 3px;
-    padding: 4px 2px 0;
-  }
-  .hourly-label {
-    flex: 1;
-    text-align: center;
-    font-size: 9px;
-    color: var(--label-tertiary);
-    font-variant-numeric: tabular-nums;
-  }
-  .hourly-empty {
-    text-align: center;
-    padding: 30px 0;
-    font-size: 12px;
-    color: var(--label-tertiary);
-  }
+  .hourly-labels { display: flex; gap: 2px; padding: 4px 2px 0; }
+  .hourly-label { flex: 1; text-align: center; font-size: 8px; color: var(--label-tertiary); font-variant-numeric: tabular-nums; }
+  .hourly-empty { text-align: center; padding: 30px 0; font-size: 12px; color: var(--label-tertiary); }
+  .summary-empty { text-align: center; padding: 60px 20px; color: var(--label-tertiary); font-size: 14px; line-height: 1.7; }
 
-  .summary-empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--label-tertiary);
-    font-size: 14px;
-    line-height: 1.7;
+  /* 比較カードのバッジ */
+  .compare-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 0.5px solid var(--separator);
   }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-label { font-size: 13px; color: var(--label-secondary); }
+  .compare-value { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .compare-delta {
+    margin-left: 8px; padding: 2px 8px; border-radius: var(--r-full);
+    font-size: 11px; font-weight: 700;
+  }
+  .compare-delta.up { background: rgba(48,164,108,0.15); color: var(--green); }
+  .compare-delta.down { background: rgba(217,97,78,0.15); color: var(--red); }
+  .compare-delta.same { background: var(--fill-secondary); color: var(--label-secondary); }
+
+  /* メモ */
+  .memo-display {
+    background: var(--fill-tertiary); border-radius: var(--r-sm); padding: 10px 12px;
+    font-size: 13px; line-height: 1.5; color: var(--label-primary); white-space: pre-wrap;
+    margin-bottom: 8px;
+  }
+  .memo-empty { font-size: 12px; color: var(--label-tertiary); padding: 4px 0; }
+  .memo-edit-btn {
+    width: 100%; padding: 10px; background: var(--fill-secondary); border: none;
+    border-radius: var(--r-sm); font-family: inherit; font-size: 12px; color: var(--label-primary);
+    cursor: pointer; font-weight: 500;
+  }
+  .memo-edit-btn:active { background: var(--fill-primary); }
 </style>
 </head>
 <body>
@@ -1228,7 +492,7 @@
     </div>
     <button class="sync-badge" id="syncBadge" aria-label="同期">
       <div class="sync-dot"></div>
-      <span class="sync-label">同期済</span>
+      <span class="sync-label">オンライン</span>
     </button>
   </header>
 
@@ -1236,13 +500,12 @@
   <div class="menu-overlay" id="menuOverlay">
     <div class="menu-panel" onclick="event.stopPropagation()">
       <div class="menu-label">記録者</div>
-      <div class="recorder-group" id="recorderGroup">
-        <!-- 動的生成 -->
-      </div>
+      <div class="recorder-group" id="recorderGroup"></div>
       <button class="end-btn" id="recorderAdminBtn" style="color:var(--label-secondary);">記録者を管理</button>
-      <div class="menu-label" style="margin-top:16px;">その他</div>
+
+      <div class="menu-label" style="margin-top:16px;">機能</div>
       <button class="end-btn" id="summaryBtn">本日の集計</button>
-      <button class="end-btn" id="refreshBtn">最新の状態に更新</button>
+      <button class="end-btn" id="memoBtn">今日のメモ</button>
       <button class="end-btn" id="adminBtn">商品管理</button>
       <button class="end-btn" id="endBtn">営業終了</button>
       <button class="menu-close" id="menuCloseBtn">閉じる</button>
@@ -1269,9 +532,9 @@
   <!-- 直近の記録 -->
   <section class="recent-section">
     <button class="recent-toggle" id="recentToggle">
-      <span>直近の記録 <span id="recentCountLabel">(3)</span></span>
+      <span>直近の記録 <span id="recentCountLabel"></span></span>
       <span class="chevron" id="recentChevron">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="display:block;"><path d="M2 7 L5.5 3.5 L9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 7 L5.5 3.5 L9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
     </button>
     <div class="recent-list" id="recentList"></div>
@@ -1285,36 +548,36 @@
   <!-- スナックバー -->
   <div class="snackbar" id="snackbar"></div>
 
-  <!-- 商品管理画面(全画面オーバーレイ) -->
+  <!-- 商品管理 -->
   <div class="admin-screen" id="adminScreen">
     <header class="admin-header">
       <div class="admin-title">商品管理</div>
-      <button class="admin-close-btn" id="adminCloseBtn" aria-label="閉じる">×</button>
+      <button class="admin-close-btn" id="adminCloseBtn">×</button>
     </header>
     <div class="admin-list" id="adminList"></div>
     <button class="add-btn" id="addProductBtn">+ 商品を追加</button>
   </div>
 
-  <!-- 記録者管理画面(全画面オーバーレイ) -->
+  <!-- 記録者管理 -->
   <div class="admin-screen" id="recorderAdminScreen">
     <header class="admin-header">
       <div class="admin-title">記録者を管理</div>
-      <button class="admin-close-btn" id="recorderAdminCloseBtn" aria-label="閉じる">×</button>
+      <button class="admin-close-btn" id="recorderAdminCloseBtn">×</button>
     </header>
     <div class="admin-list" id="recorderAdminList"></div>
     <button class="add-btn" id="addRecorderBtn">+ 記録者を追加</button>
   </div>
 
-  <!-- 本日の集計画面 -->
+  <!-- 集計 -->
   <div class="summary-screen" id="summaryScreen">
     <header class="summary-header">
       <div class="summary-title" id="summaryTitle">本日の集計</div>
-      <button class="summary-close-btn" id="summaryCloseBtn" aria-label="閉じる">×</button>
+      <button class="summary-close-btn" id="summaryCloseBtn">×</button>
     </header>
     <div class="summary-body" id="summaryBody"></div>
   </div>
 
-  <!-- 編集モーダル(商品マスタ用) -->
+  <!-- 商品編集モーダル -->
   <div class="edit-modal-overlay" id="editModalOverlay">
     <div class="edit-modal" onclick="event.stopPropagation()">
       <div class="edit-modal-title" id="editModalTitle">商品を編集</div>
@@ -1344,7 +607,7 @@
     </div>
   </div>
 
-  <!-- Basket編集モーダル -->
+  <!-- basket編集モーダル -->
   <div class="edit-modal-overlay" id="basketEditOverlay">
     <div class="edit-modal" onclick="event.stopPropagation()">
       <div class="edit-modal-title" id="basketEditTitle">記録を編集</div>
@@ -1353,9 +616,25 @@
         <div id="basketEditItems"></div>
       </div>
       <div class="edit-actions" style="flex-wrap:wrap;">
-        <button class="edit-btn cancel" id="basketEditDeleteBtn" style="border-color:#C05B3F; color:#C05B3F; flex: 1 1 100%;">この記録を削除</button>
+        <button class="edit-btn cancel" id="basketEditDeleteBtn" style="border:1.5px solid var(--red); color:var(--red); background:transparent; flex: 1 1 100%;">この記録を削除</button>
         <button class="edit-btn cancel" id="basketEditCancelBtn">キャンセル</button>
         <button class="edit-btn save" id="basketEditSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- メモ編集モーダル -->
+  <div class="edit-modal-overlay" id="memoModalOverlay">
+    <div class="edit-modal" onclick="event.stopPropagation()">
+      <div class="edit-modal-title">今日のメモ</div>
+      <div class="edit-field">
+        <div class="edit-field-label">記録</div>
+        <textarea class="edit-textarea" id="memoTextarea" placeholder="例:雨の日 / 試飲を出した / 隣でイベント / ◯◯切らした..."></textarea>
+        <div style="font-size:11px; color:var(--label-tertiary); margin-top:6px;">後で振り返る時の手がかりになります</div>
+      </div>
+      <div class="edit-actions">
+        <button class="edit-btn cancel" id="memoCancelBtn">キャンセル</button>
+        <button class="edit-btn save" id="memoSaveBtn">保存</button>
       </div>
     </div>
   </div>
@@ -1363,31 +642,19 @@
 
 <script>
   // ==========================================================
-  // POSSIBLE COFFEE タリー - フロントエンド(本番版 v1.0)
+  // 設定
   // ==========================================================
-
-  // GAS バックエンドURL
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbz6yAL-hn4YLQkiCy9iDk84TTPjVHAVSm__8WIPAOMqSyvb_zOKsayT2s6b9v-vSBE/exec';
 
-  // localStorage キー
   const LS = {
     PRODUCTS: 'tally.products',
     RECORDERS: 'tally.recorders',
-    RECENT: 'tally.recent',
-    RECENT_DATE: 'tally.recent_date',
     RECORDER: 'tally.recorder',
-    DEVICE_ID: 'tally.device_id',
   };
 
-  // --- ユーティリティ ---
-  function getDeviceId() {
-    let id = localStorage.getItem(LS.DEVICE_ID);
-    if (!id) {
-      id = 'd_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
-      localStorage.setItem(LS.DEVICE_ID, id);
-    }
-    return id;
-  }
+  // ==========================================================
+  // ユーティリティ
+  // ==========================================================
   function generateId(prefix) {
     return prefix + '_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   }
@@ -1396,7 +663,7 @@
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
 
-  // --- JSONP呼び出し ---
+  // JSONP
   let jsonpCounter = 0;
   function jsonpCall(action, params, timeout) {
     params = params || {};
@@ -1426,68 +693,42 @@
     });
   }
 
-  // --- 永続化 ---
+  async function sendToServer(action, params) {
+    if (!navigator.onLine) throw new Error('オフラインです');
+    const res = await jsonpCall(action, params);
+    if (!res || !res.ok) throw new Error(res && res.error ? res.error : '送信失敗');
+    return res;
+  }
+
+  // 永続化
   function loadProducts() {
     try { return JSON.parse(localStorage.getItem(LS.PRODUCTS) || '[]'); }
     catch(e) { return []; }
   }
-  function saveProducts(products) { localStorage.setItem(LS.PRODUCTS, JSON.stringify(products)); }
-
+  function saveProducts(p) { localStorage.setItem(LS.PRODUCTS, JSON.stringify(p)); }
   function loadRecorders() {
     try {
-      const cached = JSON.parse(localStorage.getItem(LS.RECORDERS) || 'null');
-      if (Array.isArray(cached) && cached.length > 0) return cached;
+      const c = JSON.parse(localStorage.getItem(LS.RECORDERS) || 'null');
+      if (Array.isArray(c) && c.length > 0) return c;
     } catch(e) {}
-    // キャッシュがなければデフォルト
     return [
-      { id: 'r1', name: 'Yuki', display_order: 1, active: true },
-      { id: 'r2', name: 'パートナー', display_order: 2, active: true },
+      { id: 'r_yuki', name: 'Yuki', display_order: 1, active: true },
+      { id: 'r_partner', name: 'パートナー', display_order: 2, active: true },
     ];
   }
-  function saveRecorders(recorders) { localStorage.setItem(LS.RECORDERS, JSON.stringify(recorders)); }
-
-  function loadRecent() {
-    const today = getTodayStr();
-    const savedDate = localStorage.getItem(LS.RECENT_DATE);
-    if (savedDate !== today) {
-      localStorage.setItem(LS.RECENT_DATE, today);
-      localStorage.setItem(LS.RECENT, '[]');
-      return [];
-    }
-    try { return JSON.parse(localStorage.getItem(LS.RECENT) || '[]'); }
-    catch(e) { return []; }
-  }
-  function saveRecent(baskets) {
-    localStorage.setItem(LS.RECENT, JSON.stringify(baskets));
-    localStorage.setItem(LS.RECENT_DATE, getTodayStr());
-  }
+  function saveRecorders(r) { localStorage.setItem(LS.RECORDERS, JSON.stringify(r)); }
   function loadRecorder() { return localStorage.getItem(LS.RECORDER) || 'Yuki'; }
   function saveRecorder(r) { localStorage.setItem(LS.RECORDER, r); }
-
-  // ==========================================================
-  // 即時送信(同期キューなし)
-  // 成功すれば呼び出し側は何もしない、失敗すれば例外を投げる
-  // ==========================================================
-  async function sendToServer(action, params) {
-    if (!navigator.onLine) {
-      throw new Error('オフラインです');
-    }
-    const res = await jsonpCall(action, params);
-    if (!res || !res.ok) {
-      throw new Error(res && res.error ? res.error : '送信失敗');
-    }
-    return res;
-  }
 
   function updateSyncStatus() {
     const dot = document.querySelector('.sync-dot');
     const label = document.querySelector('.sync-label');
     if (!dot || !label) return;
     if (!navigator.onLine) {
-      dot.style.background = '#C05B3F';
+      dot.style.background = '#D9614E';
       label.textContent = 'オフライン';
     } else {
-      dot.style.background = '#7A9B6E';
+      dot.style.background = '#30A46C';
       label.textContent = 'オンライン';
     }
   }
@@ -1498,24 +739,25 @@
   let PRODUCTS = loadProducts();
   let RECORDERS = loadRecorders();
   let cart = [];
-  let recentBaskets = loadRecent();
+  let recentBaskets = [];  // Sheetsから取得する(ローカル保存しない)
   let recorder = loadRecorder();
   let recentExpanded = false;
   let editingProductId = null;
   let editingRecorderId = null;
   let editingBasket = null;
+  let isFetchingRecent = false;
 
   // ==========================================================
   // レンダリング
   // ==========================================================
   function renderProducts() {
     const grid = document.getElementById('productGrid');
-    const activeProducts = PRODUCTS.filter(p => p.active);
-    if (activeProducts.length === 0) {
-      grid.innerHTML = '<div style="grid-column:1/-1; padding:20px; text-align:center; color:#b0a090; font-size:13px;">商品が読み込まれていません<br>メニュー → 商品管理から確認してください</div>';
+    const active = PRODUCTS.filter(p => p.active);
+    if (active.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; padding:20px; text-align:center; color:var(--label-tertiary); font-size:13px;">商品が読み込まれていません<br>メニュー → 商品管理から確認してください</div>';
       return;
     }
-    grid.innerHTML = activeProducts.map(p => {
+    grid.innerHTML = active.map(p => {
       const inCart = cart.find(c => c.id === p.id);
       return '<button class="product-btn ' + (inCart ? 'in-cart' : '') + '" data-id="' + p.id + '">' +
         p.name +
@@ -1560,30 +802,36 @@
     const list = document.getElementById('recentList');
     const countLabel = document.getElementById('recentCountLabel');
     const chevron = document.getElementById('recentChevron');
-    countLabel.textContent = '(' + recentBaskets.length + ')';
-    list.innerHTML = recentBaskets.slice(0, 10).map(b =>
-      '<div class="recent-item" data-id="' + b.basketId + '">' +
-        '<div class="recent-header">' +
-          '<div class="recent-time">' + b.time + ' · ' + b.recorder + '</div>' +
-          '<div class="recent-hint">タップで編集</div>' +
-        '</div>' +
-        '<div class="recent-items-text">' +
-          b.items.map(i => i.name + ' ×' + i.qty).join(' · ') +
-        '</div>' +
-      '</div>'
-    ).join('');
-    list.querySelectorAll('.recent-item').forEach(item => {
-      item.addEventListener('click', () => openBasketEditModal(item.dataset.id));
-    });
+    countLabel.textContent = recentBaskets.length > 0 ? '(' + recentBaskets.length + ')' : '';
+    if (isFetchingRecent && recentBaskets.length === 0) {
+      list.innerHTML = '<div class="recent-loading">読み込み中...</div>';
+    } else if (recentBaskets.length === 0) {
+      list.innerHTML = '<div class="recent-loading">本日の記録はまだありません</div>';
+    } else {
+      list.innerHTML = recentBaskets.slice(0, 10).map(b =>
+        '<div class="recent-item" data-id="' + b.basketId + '">' +
+          '<div class="recent-header">' +
+            '<div class="recent-time">' + b.time + ' · ' + b.recorder + '</div>' +
+            '<div class="recent-hint">タップで編集</div>' +
+          '</div>' +
+          '<div class="recent-items-text">' +
+            b.items.map(i => i.name + ' ×' + i.qty).join(' · ') +
+          '</div>' +
+        '</div>'
+      ).join('');
+      list.querySelectorAll('.recent-item').forEach(item => {
+        item.addEventListener('click', () => openBasketEditModal(item.dataset.id));
+      });
+    }
     list.classList.toggle('open', recentExpanded);
     chevron.classList.toggle('expanded', !recentExpanded);
   }
 
   function renderStatus() {
     const now = new Date();
-    const days = ['日', '月', '火', '水', '木', '金', '土'];
-    document.getElementById('dateLabel').textContent = (now.getMonth() + 1) + '/' + now.getDate() + '(' + days[now.getDay()] + ')';
-    const totalItems = recentBaskets.reduce((sum, b) => sum + b.items.reduce((s, i) => s + i.qty, 0), 0);
+    const days = ['日','月','火','水','木','金','土'];
+    document.getElementById('dateLabel').textContent = (now.getMonth()+1) + '/' + now.getDate() + '(' + days[now.getDay()] + ')';
+    const totalItems = recentBaskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
     document.getElementById('itemCount').textContent = totalItems;
     updateSyncStatus();
   }
@@ -1591,26 +839,18 @@
   function renderRecorderButtons() {
     const group = document.getElementById('recorderGroup');
     const active = RECORDERS.filter(r => r.active);
-
-    // 現在のrecorderがactiveにいなければ、activeの先頭に切替
     if (active.length > 0 && !active.find(r => r.name === recorder)) {
       recorder = active[0].name;
       saveRecorder(recorder);
     }
-
-    // カート側のラベル更新
-    const recorderLabelEl = document.getElementById('recorderLabel');
-    if (recorderLabelEl) recorderLabelEl.textContent = recorder;
-
+    const recLabel = document.getElementById('recorderLabel');
+    if (recLabel) recLabel.textContent = recorder;
     if (active.length === 0) {
       group.innerHTML = '<div style="padding:10px; text-align:center; color:var(--label-tertiary); font-size:12px;">記録者が登録されていません</div>';
       return;
     }
-
     group.innerHTML = active.map(r =>
-      '<button class="recorder-btn ' + (r.name === recorder ? 'active' : '') + '" data-recorder="' + r.name + '">' +
-        r.name +
-      '</button>'
+      '<button class="recorder-btn ' + (r.name === recorder ? 'active' : '') + '" data-recorder="' + r.name + '">' + r.name + '</button>'
     ).join('');
     group.querySelectorAll('.recorder-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1628,6 +868,63 @@
     renderRecent();
     renderStatus();
     renderRecorderButtons();
+  }
+
+  // ==========================================================
+  // データ取得
+  // ==========================================================
+  async function fetchMasters() {
+    if (!navigator.onLine) return false;
+    let updated = false;
+    try {
+      const res = await jsonpCall('getProducts');
+      if (res && res.ok && Array.isArray(res.products)) {
+        if (JSON.stringify(res.products) !== JSON.stringify(PRODUCTS)) {
+          PRODUCTS = res.products;
+          saveProducts(PRODUCTS);
+          updated = true;
+        }
+      }
+    } catch (e) { console.warn('商品取得失敗', e); }
+    try {
+      const res = await jsonpCall('getRecorders');
+      if (res && res.ok && Array.isArray(res.recorders)) {
+        if (JSON.stringify(res.recorders) !== JSON.stringify(RECORDERS)) {
+          RECORDERS = res.recorders;
+          saveRecorders(RECORDERS);
+          updated = true;
+        }
+      }
+    } catch (e) { console.warn('記録者取得失敗', e); }
+    if (updated) renderAll();
+    return updated;
+  }
+
+  async function fetchTodayBaskets() {
+    if (!navigator.onLine) return;
+    if (isFetchingRecent) return;
+    isFetchingRecent = true;
+    try {
+      const res = await jsonpCall('getTodayBaskets');
+      if (res && res.ok && Array.isArray(res.baskets)) {
+        recentBaskets = res.baskets.map(b => {
+          const t = new Date(b.confirmed_at);
+          return {
+            basketId: b.basket_id,
+            time: String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0'),
+            items: b.items.map(i => ({ name: i.name, qty: i.qty })),
+            recorder: b.recorder,
+            confirmed_at: b.confirmed_at,
+          };
+        });
+        renderRecent();
+        renderStatus();
+      }
+    } catch (e) {
+      console.warn('直近記録取得失敗', e);
+    } finally {
+      isFetchingRecent = false;
+    }
   }
 
   // ==========================================================
@@ -1661,7 +958,7 @@
   }
 
   // ==========================================================
-  // basket確定(即時送信)
+  // basket確定
   // ==========================================================
   async function confirmBasket() {
     if (cart.length === 0) return;
@@ -1669,8 +966,7 @@
     if (recordBtn.disabled) return;
 
     const now = new Date();
-    const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    const basket_id = 'b_' + getDeviceId() + '_' + Date.now();
+    const basket_id = 'b_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
     const confirmed_at = now.toISOString();
     const totalQty = cart.reduce((s, i) => s + i.qty, 0);
     const items = cart.map(c => ({
@@ -1681,33 +977,32 @@
       recorder: recorder,
     }));
 
-    // ボタンを一時的に無効化(連打防止)
     recordBtn.disabled = true;
-    const originalText = recordBtn.textContent;
+    const orig = recordBtn.textContent;
     recordBtn.textContent = '送信中...';
 
     try {
       await sendToServer('addBasket', {
         data: { basket_id: basket_id, confirmed_at: confirmed_at, items: items, note: '' }
       });
-      // 成功:UI更新
-      recentBaskets.unshift({
-        basketId: basket_id,
-        time: timeStr,
-        items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty })),
-        recorder: recorder,
-        confirmed_at: confirmed_at,
-      });
-      saveRecent(recentBaskets);
       cart = [];
+      await fetchTodayBaskets();  // Sheetsから取得し直す
       renderAll();
       showSnackbar('✓ ' + totalQty + '点 記録しました');
     } catch (err) {
-      // 失敗:カートはそのまま、エラー通知
       recordBtn.disabled = false;
-      recordBtn.textContent = originalText;
-      showSnackbar('⚠️ 送信失敗 ' + err.message + ' (もう一度押してください)', 'error');
+      recordBtn.textContent = orig;
+      showSnackbar('⚠️ 送信失敗 ' + errorMessage(err) + ' (もう一度押してください)', 'error');
     }
+  }
+
+  function errorMessage(err) {
+    const m = err.message || String(err);
+    if (m === 'timeout') return '電波が弱いかも';
+    if (m === 'network_error') return 'ネット接続を確認';
+    if (m.indexOf('オフライン') >= 0) return 'オフライン';
+    if (m.indexOf('Unknown action') >= 0) return 'アプリの更新が必要(リロード)';
+    return m;
   }
 
   function showSnackbar(text, type) {
@@ -1716,23 +1011,31 @@
     sb.classList.remove('error');
     if (type === 'error') sb.classList.add('error');
     sb.classList.add('show');
-    const duration = type === 'error' ? 3500 : 2000;
-    setTimeout(() => sb.classList.remove('show'), duration);
+    setTimeout(() => sb.classList.remove('show'), type === 'error' ? 3500 : 2000);
   }
 
   // ==========================================================
-  // basket編集モーダル
+  // basket編集(Sheetsから最新取得してから編集)
   // ==========================================================
-  function openBasketEditModal(basketId) {
-    const basket = recentBaskets.find(b => b.basketId === basketId);
-    if (!basket) return;
-    editingBasket = {
-      basketId: basket.basketId,
-      items: basket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty })),
-      original_items: basket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty })),
-    };
-    renderBasketEdit();
+  async function openBasketEditModal(basketId) {
     document.getElementById('basketEditOverlay').classList.add('open');
+    document.getElementById('basketEditTitle').textContent = '読み込み中...';
+    document.getElementById('basketEditItems').innerHTML = '<div style="padding:16px; text-align:center; color:var(--label-tertiary); font-size:12px;">最新の状態を取得中...</div>';
+
+    try {
+      const res = await jsonpCall('getBasket', { basketId: basketId });
+      if (!res || !res.ok || !res.basket) throw new Error('basket取得失敗');
+      const b = res.basket;
+      editingBasket = {
+        basketId: b.basket_id,
+        items: b.items.map(i => ({ id: i.product_id, name: i.product_name, qty: i.quantity })),
+        original_items: b.items.map(i => ({ id: i.product_id, name: i.product_name, qty: i.quantity })),
+      };
+      renderBasketEdit();
+    } catch (err) {
+      document.getElementById('basketEditOverlay').classList.remove('open');
+      showSnackbar('⚠️ 編集情報取得失敗 ' + errorMessage(err), 'error');
+    }
   }
 
   function renderBasketEdit() {
@@ -1740,21 +1043,22 @@
     const container = document.getElementById('basketEditItems');
     const totalQty = editingBasket.items.reduce((s, i) => s + i.qty, 0);
     document.getElementById('basketEditTitle').textContent = '記録を編集(' + totalQty + '点)';
-    container.innerHTML = editingBasket.items.map(item =>
-      '<div class="cart-item" style="background:#FFFFFF; margin-bottom:6px;">' +
-        '<div class="cart-item-name">' + item.name + '</div>' +
-        '<button class="qty-btn minus" data-bedit="minus" data-id="' + item.id + '">−</button>' +
-        '<div class="qty-display">' + item.qty + '</div>' +
-        '<button class="qty-btn plus" data-bedit="plus" data-id="' + item.id + '">+</button>' +
-        '<button class="remove-btn" data-bedit="remove" data-id="' + item.id + '">×</button>' +
-      '</div>'
-    ).join('');
     if (editingBasket.items.length === 0) {
-      container.innerHTML = '<div style="padding:16px; text-align:center; color:#b0a090; font-size:12px;">全て削除されました<br>「保存」で記録を削除します</div>';
+      container.innerHTML = '<div style="padding:16px; text-align:center; color:var(--label-tertiary); font-size:12px;">全て削除されました<br>「保存」で記録を削除します</div>';
+    } else {
+      container.innerHTML = editingBasket.items.map(item =>
+        '<div class="cart-item" style="background:#FFFFFF; margin-bottom:6px; border-radius:12px;">' +
+          '<div class="cart-item-name">' + item.name + '</div>' +
+          '<button class="qty-btn minus" data-bedit="minus" data-id="' + item.id + '">−</button>' +
+          '<div class="qty-display">' + item.qty + '</div>' +
+          '<button class="qty-btn plus" data-bedit="plus" data-id="' + item.id + '">+</button>' +
+          '<button class="remove-btn" data-bedit="remove" data-id="' + item.id + '">×</button>' +
+        '</div>'
+      ).join('');
+      container.querySelectorAll('[data-bedit]').forEach(btn => {
+        btn.addEventListener('click', () => handleBasketEditAction(btn.dataset.bedit, btn.dataset.id));
+      });
     }
-    container.querySelectorAll('[data-bedit]').forEach(btn => {
-      btn.addEventListener('click', () => handleBasketEditAction(btn.dataset.bedit, btn.dataset.id));
-    });
   }
 
   function handleBasketEditAction(action, productId) {
@@ -1778,14 +1082,10 @@
   async function saveBasketEdit() {
     if (!editingBasket) return;
     if (editingBasket.items.length === 0) { deleteBasket(); return; }
-    const basket = recentBaskets.find(b => b.basketId === editingBasket.basketId);
-    if (!basket) return;
-
     const saveBtn = document.getElementById('basketEditSaveBtn');
     saveBtn.disabled = true;
-    const origText = saveBtn.textContent;
+    const orig = saveBtn.textContent;
     saveBtn.textContent = '送信中...';
-
     try {
       await sendToServer('modifyBasket', {
         data: {
@@ -1797,25 +1097,22 @@
           recorder: recorder,
         }
       });
-      basket.items = editingBasket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty }));
-      saveRecent(recentBaskets);
+      await fetchTodayBaskets();
       renderAll();
       closeBasketEditModal();
       showSnackbar('記録を修正しました');
     } catch (err) {
       saveBtn.disabled = false;
-      saveBtn.textContent = origText;
-      showSnackbar('⚠️ 修正失敗 ' + err.message, 'error');
+      saveBtn.textContent = orig;
+      showSnackbar('⚠️ 修正失敗 ' + errorMessage(err), 'error');
     }
   }
 
   async function deleteBasket() {
     if (!editingBasket) return;
     if (!confirm('この記録を削除しますか?\n※データには「削除済」として残ります')) return;
-
     const delBtn = document.getElementById('basketEditDeleteBtn');
     delBtn.disabled = true;
-
     try {
       await sendToServer('modifyBasket', {
         data: {
@@ -1826,14 +1123,13 @@
           recorder: recorder,
         }
       });
-      recentBaskets = recentBaskets.filter(b => b.basketId !== editingBasket.basketId);
-      saveRecent(recentBaskets);
+      await fetchTodayBaskets();
       renderAll();
       closeBasketEditModal();
       showSnackbar('記録を削除しました');
     } catch (err) {
       delBtn.disabled = false;
-      showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
+      showSnackbar('⚠️ 削除失敗 ' + errorMessage(err), 'error');
     }
   }
 
@@ -1875,42 +1171,38 @@
     const product = PRODUCTS[idx];
 
     if (action === 'up' && idx > 0) {
-      const tmp = PRODUCTS[idx - 1]; PRODUCTS[idx - 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
+      [PRODUCTS[idx - 1], PRODUCTS[idx]] = [PRODUCTS[idx], PRODUCTS[idx - 1]];
       PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
       saveProducts(PRODUCTS);
       renderAdminList();
       try {
-        await sendToServer('reorderProducts', {
-          data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
-        });
-        await fetchMasters(false); // Sheetsから最新を再取得
+        await sendToServer('reorderProducts', { data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 })) });
+        await fetchMasters();
         renderAdminList();
-      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + errorMessage(err), 'error'); }
     } else if (action === 'down' && idx < PRODUCTS.length - 1) {
-      const tmp = PRODUCTS[idx + 1]; PRODUCTS[idx + 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
+      [PRODUCTS[idx + 1], PRODUCTS[idx]] = [PRODUCTS[idx], PRODUCTS[idx + 1]];
       PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
       saveProducts(PRODUCTS);
       renderAdminList();
       try {
-        await sendToServer('reorderProducts', {
-          data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
-        });
-        await fetchMasters(false);
+        await sendToServer('reorderProducts', { data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 })) });
+        await fetchMasters();
         renderAdminList();
-      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + errorMessage(err), 'error'); }
     } else if (action === 'toggle') {
       product.active = !product.active;
       saveProducts(PRODUCTS);
       renderAdminList();
       try {
         await sendToServer('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
-        await fetchMasters(false);
+        await fetchMasters();
         renderAdminList();
       } catch (err) {
         product.active = !product.active;
         saveProducts(PRODUCTS);
         renderAdminList();
-        showSnackbar('⚠️ 切替失敗 ' + err.message, 'error');
+        showSnackbar('⚠️ 切替失敗 ' + errorMessage(err), 'error');
       }
     } else if (action === 'edit') {
       openEditModal(product);
@@ -1918,11 +1210,11 @@
       if (confirm('「' + product.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
         try {
           await sendToServer('deleteProduct', { productId: id });
-          await fetchMasters(false); // Sheetsから最新を再取得して、削除が確実に反映されたことを確認
+          await fetchMasters();
           renderAdminList();
           showSnackbar('削除しました');
         } catch (err) {
-          showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
+          showSnackbar('⚠️ 削除失敗 ' + errorMessage(err), 'error');
         }
       }
     }
@@ -1944,28 +1236,24 @@
     if (!name) { alert('商品名を入力してください'); return; }
     const saveBtn = document.getElementById('editSaveBtn');
     saveBtn.disabled = true;
-    const origText = saveBtn.textContent;
+    const orig = saveBtn.textContent;
     saveBtn.textContent = '送信中...';
-
     try {
       if (editingProductId === null) {
         const id = 'p_' + Date.now();
         const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
-        const newProduct = { id: id, name: name, active: true, display_order: maxOrder + 1 };
-        await sendToServer('upsertProduct', { data: newProduct });
+        await sendToServer('upsertProduct', { data: { id: id, name: name, active: true, display_order: maxOrder + 1 } });
       } else {
         const product = PRODUCTS.find(p => p.id === editingProductId);
-        if (product) {
-          await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active } });
-        }
+        if (product) await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active } });
       }
-      await fetchMasters(false); // Sheetsから最新を取得
+      await fetchMasters();
       closeEditModal();
       renderAdminList();
     } catch (err) {
       saveBtn.disabled = false;
-      saveBtn.textContent = origText;
-      showSnackbar('⚠️ 保存失敗 ' + err.message, 'error');
+      saveBtn.textContent = orig;
+      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
     }
   }
 
@@ -1975,7 +1263,7 @@
   function renderRecorderAdminList() {
     const list = document.getElementById('recorderAdminList');
     if (RECORDERS.length === 0) {
-      list.innerHTML = '<div class="admin-list-empty">記録者がまだいません<br>下の「+ 記録者を追加」から登録してください</div>';
+      list.innerHTML = '<div class="admin-list-empty">記録者がまだいません</div>';
       return;
     }
     list.innerHTML = RECORDERS.map((r, idx) =>
@@ -2005,44 +1293,39 @@
     const idx = RECORDERS.findIndex(r => r.id === id);
     if (idx === -1) return;
     const rec = RECORDERS[idx];
-
     if (action === 'up' && idx > 0) {
-      const tmp = RECORDERS[idx - 1]; RECORDERS[idx - 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
+      [RECORDERS[idx - 1], RECORDERS[idx]] = [RECORDERS[idx], RECORDERS[idx - 1]];
       RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
       try {
-        await sendToServer('reorderRecorders', {
-          data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
-        });
-        await fetchMasters(false);
+        await sendToServer('reorderRecorders', { data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 })) });
+        await fetchMasters();
         renderRecorderAdminList();
-      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + errorMessage(err), 'error'); }
     } else if (action === 'down' && idx < RECORDERS.length - 1) {
-      const tmp = RECORDERS[idx + 1]; RECORDERS[idx + 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
+      [RECORDERS[idx + 1], RECORDERS[idx]] = [RECORDERS[idx], RECORDERS[idx + 1]];
       RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
       try {
-        await sendToServer('reorderRecorders', {
-          data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
-        });
-        await fetchMasters(false);
+        await sendToServer('reorderRecorders', { data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 })) });
+        await fetchMasters();
         renderRecorderAdminList();
-      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + errorMessage(err), 'error'); }
     } else if (action === 'toggle') {
       rec.active = !rec.active;
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
       try {
         await sendToServer('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
-        await fetchMasters(false);
+        await fetchMasters();
         renderRecorderAdminList();
       } catch (err) {
         rec.active = !rec.active;
         saveRecorders(RECORDERS);
         renderRecorderAdminList();
-        showSnackbar('⚠️ 切替失敗 ' + err.message, 'error');
+        showSnackbar('⚠️ 切替失敗 ' + errorMessage(err), 'error');
       }
     } else if (action === 'edit') {
       openRecorderEditModal(rec);
@@ -2050,12 +1333,10 @@
       if (confirm('「' + rec.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
         try {
           await sendToServer('deleteRecorder', { recorderId: id });
-          await fetchMasters(false);
+          await fetchMasters();
           renderRecorderAdminList();
           showSnackbar('削除しました');
-        } catch (err) {
-          showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
-        }
+        } catch (err) { showSnackbar('⚠️ 削除失敗 ' + errorMessage(err), 'error'); }
       }
     }
   }
@@ -2076,20 +1357,17 @@
     if (!name) { alert('名前を入力してください'); return; }
     const saveBtn = document.getElementById('recorderEditSaveBtn');
     saveBtn.disabled = true;
-    const origText = saveBtn.textContent;
+    const orig = saveBtn.textContent;
     saveBtn.textContent = '送信中...';
-
     try {
-      let oldName = null;
       if (editingRecorderId === null) {
         const id = 'r_' + Date.now();
         const maxOrder = RECORDERS.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
-        const newRec = { id: id, name: name, active: true, display_order: maxOrder + 1 };
-        await sendToServer('upsertRecorder', { data: newRec });
+        await sendToServer('upsertRecorder', { data: { id: id, name: name, active: true, display_order: maxOrder + 1 } });
       } else {
         const rec = RECORDERS.find(r => r.id === editingRecorderId);
         if (rec) {
-          oldName = rec.name;
+          const oldName = rec.name;
           await sendToServer('upsertRecorder', { data: { id: rec.id, name: name, active: rec.active } });
           if (oldName === recorder) {
             recorder = name;
@@ -2097,13 +1375,284 @@
           }
         }
       }
-      await fetchMasters(false);
+      await fetchMasters();
       closeRecorderEditModal();
       renderRecorderAdminList();
     } catch (err) {
       saveBtn.disabled = false;
-      saveBtn.textContent = origText;
-      showSnackbar('⚠️ 保存失敗 ' + err.message, 'error');
+      saveBtn.textContent = orig;
+      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
+    }
+  }
+
+  // ==========================================================
+  // 集計画面
+  // ==========================================================
+  async function openSummary(isEndOfDay) {
+    document.getElementById('summaryScreen').classList.add('open');
+    const titleEl = document.getElementById('summaryTitle');
+    const body = document.getElementById('summaryBody');
+    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
+    body.innerHTML = '<div class="summary-empty">読み込み中...</div>';
+
+    let baskets = recentBaskets;
+    let weather = null;
+    let comparison = null;
+    let memo = '';
+
+    if (navigator.onLine) {
+      try {
+        const res = await jsonpCall('getTodayBaskets');
+        if (res && res.ok && Array.isArray(res.baskets)) {
+          baskets = res.baskets.map(b => {
+            const t = new Date(b.confirmed_at);
+            return {
+              basketId: b.basket_id,
+              time: String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0'),
+              items: b.items.map(i => ({ name: i.name, qty: i.qty })),
+              recorder: b.recorder,
+              confirmed_at: b.confirmed_at,
+            };
+          });
+        }
+      } catch (err) { console.warn(err); }
+      try {
+        const wres = await jsonpCall('getTodayWeatherSummary');
+        if (wres && wres.ok && wres.hasData) weather = wres.summary;
+      } catch (err) { console.warn(err); }
+      try {
+        const cres = await jsonpCall('getHistoricalComparison');
+        if (cres && cres.ok && cres.hasHistory) comparison = cres;
+      } catch (err) { console.warn(err); }
+      try {
+        const mres = await jsonpCall('getTodayMemo');
+        if (mres && mres.ok) memo = mres.memo || '';
+      } catch (err) { console.warn(err); }
+    }
+
+    renderSummary(isEndOfDay, baskets, weather, comparison, memo);
+  }
+
+  function closeSummary() {
+    document.getElementById('summaryScreen').classList.remove('open');
+  }
+
+  function renderSummary(isEndOfDay, baskets, weather, comparison, memo) {
+    const titleEl = document.getElementById('summaryTitle');
+    const body = document.getElementById('summaryBody');
+    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
+
+    if (!baskets || baskets.length === 0) {
+      body.innerHTML = '<div class="summary-empty">本日の記録はまだありません<br>記録を始めると、ここに集計が表示されます</div>';
+      return;
+    }
+
+    const totalBaskets = baskets.length;
+    const totalItems = baskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
+    const avg = (totalItems / totalBaskets).toFixed(1);
+    const times = baskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
+    let timeRangeStr = '—', durationStr = '—';
+    if (times.length > 0) {
+      const min = new Date(Math.min(...times.map(t => t.getTime())));
+      const max = new Date(Math.max(...times.map(t => t.getTime())));
+      const fmt = (d) => String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      timeRangeStr = fmt(min) + ' 〜 ' + fmt(max);
+      const diffMin = Math.round((max - min) / 60000);
+      const h = Math.floor(diffMin / 60), m = diffMin % 60;
+      durationStr = (h > 0 ? h + '時間' : '') + (m + '分');
+    }
+
+    // 商品別集計
+    const productMap = {};
+    baskets.forEach(b => b.items.forEach(i => {
+      productMap[i.name] = (productMap[i.name] || 0) + i.qty;
+    }));
+    const productRanking = Object.keys(productMap).map(n => ({ name: n, qty: productMap[n] })).sort((a, b) => b.qty - a.qty);
+    const maxProductQty = productRanking[0] ? productRanking[0].qty : 1;
+
+    // 30分刻みの時間帯分布
+    const halfHourCounts = new Array(48).fill(0); // 0時0分〜23時30分
+    baskets.forEach(b => {
+      if (!b.confirmed_at) return;
+      const d = new Date(b.confirmed_at);
+      const slot = d.getHours() * 2 + (d.getMinutes() >= 30 ? 1 : 0);
+      const qty = b.items.reduce((s, i) => s + i.qty, 0);
+      halfHourCounts[slot] += qty;
+    });
+    let firstSlot = -1, lastSlot = -1;
+    for (let s = 0; s < 48; s++) {
+      if (halfHourCounts[s] > 0) {
+        if (firstSlot === -1) firstSlot = s;
+        lastSlot = s;
+      }
+    }
+    const maxHourly = Math.max(...halfHourCounts, 1);
+
+    let html = '';
+
+    if (isEndOfDay) {
+      const today = new Date();
+      const days = ['日','月','火','水','木','金','土'];
+      const dateStr = (today.getMonth()+1) + '月' + today.getDate() + '日(' + days[today.getDay()] + ')';
+      html += '<div class="summary-greeting">' +
+        '<div class="summary-greeting-title">おつかれさまでした 🌙</div>' +
+        '<div class="summary-greeting-sub">' + dateStr + ' の営業を終了しました</div>' +
+      '</div>';
+    }
+
+    // A. 本日の概要
+    html += '<div class="summary-card">' +
+      '<div class="summary-card-title">本日の概要</div>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-cell"><div class="stat-cell-label">basket数</div><div class="stat-cell-value">' + totalBaskets + '<span class="stat-cell-unit">組</span></div></div>' +
+        '<div class="stat-cell"><div class="stat-cell-label">総杯数</div><div class="stat-cell-value">' + totalItems + '<span class="stat-cell-unit">杯</span></div></div>' +
+        '<div class="stat-cell"><div class="stat-cell-label">1組あたり</div><div class="stat-cell-value">' + avg + '<span class="stat-cell-unit">杯</span></div></div>' +
+        '<div class="stat-cell"><div class="stat-cell-label">営業時間</div><div class="stat-cell-value" style="font-size:18px;">' + durationStr + '</div><div class="stat-cell-label" style="margin-top:2px; font-size:10px;">' + timeRangeStr + '</div></div>' +
+      '</div>' +
+    '</div>';
+
+    // 過去比較
+    if (comparison && comparison.hasHistory) {
+      html += '<div class="summary-card"><div class="summary-card-title">過去との比較(' + comparison.totalBusinessDays + '日分の履歴)</div>';
+      const lastDelta = totalItems - comparison.last.items;
+      const avgDelta = totalItems - comparison.average.items;
+      const lastDate = comparison.last.date;
+      const lastDateFmt = lastDate.substring(5).replace('-', '/');
+      html += '<div class="compare-row"><div class="compare-label">前回(' + lastDateFmt + ')</div><div class="compare-value">' + comparison.last.items + ' 杯' + deltaBadge(lastDelta) + '</div></div>';
+      html += '<div class="compare-row"><div class="compare-label">過去平均</div><div class="compare-value">' + comparison.average.items + ' 杯' + deltaBadge(avgDelta) + '</div></div>';
+      const bestDateFmt = comparison.best.date.substring(5).replace('-', '/');
+      const isBest = totalItems > comparison.best.items;
+      html += '<div class="compare-row"><div class="compare-label">過去最高(' + bestDateFmt + ')</div><div class="compare-value">' + comparison.best.items + ' 杯' + (isBest ? '<span class="compare-delta up">🎉 更新</span>' : '') + '</div></div>';
+      html += '</div>';
+    }
+
+    // メモ
+    html += '<div class="summary-card"><div class="summary-card-title">今日のメモ</div>';
+    if (memo) {
+      html += '<div class="memo-display">' + escapeHtml(memo) + '</div>';
+    } else {
+      html += '<div class="memo-empty">まだ記録されていません</div>';
+    }
+    html += '<button class="memo-edit-btn" id="summaryMemoEditBtn">' + (memo ? '編集' : '記録する') + '</button></div>';
+
+    // B. 商品ランキング
+    html += '<div class="summary-card"><div class="summary-card-title">商品ランキング</div>';
+    productRanking.forEach((p, idx) => {
+      const pct = ((p.qty / totalItems) * 100).toFixed(0);
+      const barWidth = (p.qty / maxProductQty) * 100;
+      html += '<div class="ranking-row ' + (idx === 0 ? 'top1' : '') + '">' +
+        '<div class="ranking-rank">' + (idx + 1) + '</div>' +
+        '<div class="ranking-name">' + p.name + '</div>' +
+        '<div class="ranking-bar-wrap"><div class="ranking-bar" style="width:' + barWidth + '%;"></div></div>' +
+        '<div class="ranking-qty">' + p.qty + '杯<span class="pct">(' + pct + '%)</span></div>' +
+      '</div>';
+    });
+    html += '</div>';
+
+    // C. 時間帯分布(30分刻み)
+    html += '<div class="summary-card"><div class="summary-card-title">時間帯分布(30分刻み)</div>';
+    if (firstSlot === -1) {
+      html += '<div class="hourly-empty">時刻データがありません</div>';
+    } else {
+      let peakSlot = firstSlot;
+      for (let s = firstSlot; s <= lastSlot; s++) {
+        if (halfHourCounts[s] > halfHourCounts[peakSlot]) peakSlot = s;
+      }
+      let chartHtml = '<div class="hourly-chart">';
+      let labelsHtml = '<div class="hourly-labels">';
+      for (let s = firstSlot; s <= lastSlot; s++) {
+        const count = halfHourCounts[s];
+        const heightPct = count > 0 ? (count / maxHourly) * 100 : 0;
+        const isPeak = s === peakSlot && count > 0;
+        chartHtml += '<div class="hourly-bar-wrap">' +
+          (count > 0 ? '<div class="hourly-bar-value">' + count + '</div>' : '<div class="hourly-bar-value">&nbsp;</div>') +
+          '<div class="hourly-bar ' + (isPeak ? 'peak' : '') + '" style="height:' + heightPct + '%;"></div>' +
+        '</div>';
+        const isHalf = (s % 2) === 1;
+        const hour = Math.floor(s / 2);
+        labelsHtml += '<div class="hourly-label">' + (isHalf ? '' : hour) + '</div>';
+      }
+      chartHtml += '</div>';
+      labelsHtml += '</div>';
+      html += chartHtml + labelsHtml;
+      const peakHour = Math.floor(peakSlot / 2);
+      const peakMin = (peakSlot % 2) * 30;
+      html += '<div style="margin-top:12px; font-size:11px; color:var(--label-tertiary); text-align:center;">' +
+        'ピーク:' + peakHour + ':' + String(peakMin).padStart(2,'0') + '〜(' + halfHourCounts[peakSlot] + '杯)' +
+      '</div>';
+    }
+    html += '</div>';
+
+    // D. 天気
+    if (weather) {
+      const tempRange = weather.tempMin && weather.tempMax ? weather.tempMin + '℃ 〜 ' + weather.tempMax + '℃' : '—';
+      const rainStr = parseFloat(weather.totalRain) > 0 ? weather.totalRain + ' mm' : 'なし';
+      html += '<div class="summary-card"><div class="summary-card-title">本日の天気</div>' +
+        '<div class="stat-grid">' +
+          '<div class="stat-cell"><div class="stat-cell-label">天候</div><div class="stat-cell-value" style="font-size:18px;">' + weather.dominantLabel + '</div></div>' +
+          '<div class="stat-cell"><div class="stat-cell-label">気温(平均)</div><div class="stat-cell-value">' + (weather.tempAvg || '—') + '<span class="stat-cell-unit">℃</span></div></div>' +
+          '<div class="stat-cell"><div class="stat-cell-label">気温(最低〜最高)</div><div class="stat-cell-value" style="font-size:14px;">' + tempRange + '</div></div>' +
+          '<div class="stat-cell"><div class="stat-cell-label">降水量</div><div class="stat-cell-value" style="font-size:18px;">' + rainStr + '</div></div>' +
+        '</div></div>';
+    }
+
+    body.innerHTML = html;
+
+    // メモ編集ボタンのリスナー
+    const memoBtn = document.getElementById('summaryMemoEditBtn');
+    if (memoBtn) memoBtn.addEventListener('click', () => openMemoModal(memo));
+  }
+
+  function deltaBadge(delta) {
+    if (delta > 0) return '<span class="compare-delta up">+' + delta + '</span>';
+    if (delta < 0) return '<span class="compare-delta down">' + delta + '</span>';
+    return '<span class="compare-delta same">±0</span>';
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // ==========================================================
+  // メモ
+  // ==========================================================
+  async function openMemoModal(currentMemo) {
+    if (currentMemo === undefined) {
+      // メニューから直接呼ばれた時はSheetsから取得
+      try {
+        const res = await jsonpCall('getTodayMemo');
+        currentMemo = (res && res.ok) ? (res.memo || '') : '';
+      } catch (e) {
+        currentMemo = '';
+      }
+    }
+    document.getElementById('memoTextarea').value = currentMemo;
+    document.getElementById('memoModalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('memoTextarea').focus(), 100);
+  }
+  function closeMemoModal() {
+    document.getElementById('memoModalOverlay').classList.remove('open');
+  }
+  async function saveMemo() {
+    const memo = document.getElementById('memoTextarea').value;
+    const saveBtn = document.getElementById('memoSaveBtn');
+    saveBtn.disabled = true;
+    const orig = saveBtn.textContent;
+    saveBtn.textContent = '送信中...';
+    try {
+      await sendToServer('saveTodayMemo', { memo: memo });
+      closeMemoModal();
+      showSnackbar('メモを保存しました');
+      // 集計画面が開いている場合は再描画
+      if (document.getElementById('summaryScreen').classList.contains('open')) {
+        openSummary(false);
+      }
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = orig;
+      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
     }
   }
 
@@ -2114,6 +1663,7 @@
   document.getElementById('recentToggle').addEventListener('click', () => {
     recentExpanded = !recentExpanded;
     renderRecent();
+    if (recentExpanded && recentBaskets.length === 0) fetchTodayBaskets();
   });
   document.getElementById('menuBtn').addEventListener('click', () => {
     document.getElementById('menuOverlay').classList.add('open');
@@ -2125,25 +1675,16 @@
     document.getElementById('menuOverlay').classList.remove('open');
   });
 
-  // 集計画面
-  document.getElementById('summaryBtn').addEventListener('click', () => {
-    document.getElementById('menuOverlay').classList.remove('open');
-    openSummary(false);
-  });
-  document.getElementById('summaryCloseBtn').addEventListener('click', closeSummary);
-
   document.getElementById('endBtn').addEventListener('click', async () => {
     if (!confirm('営業終了しますか?')) return;
     document.getElementById('menuOverlay').classList.remove('open');
-
     const endBtn = document.getElementById('endBtn');
     endBtn.disabled = true;
     try {
       await sendToServer('markBusinessEnd', {});
-      // 営業終了後に集計画面を自動表示
       openSummary(true);
     } catch (err) {
-      showSnackbar('⚠️ 営業終了の記録失敗 ' + err.message, 'error');
+      showSnackbar('⚠️ 営業終了の記録失敗 ' + errorMessage(err), 'error');
     } finally {
       endBtn.disabled = false;
     }
@@ -2185,331 +1726,72 @@
   document.getElementById('basketEditSaveBtn').addEventListener('click', saveBasketEdit);
   document.getElementById('basketEditDeleteBtn').addEventListener('click', deleteBasket);
 
-  // ネットワーク状態
-  window.addEventListener('online', () => {
-    updateSyncStatus();
-    fetchMasters(false);
-  });
-  window.addEventListener('offline', updateSyncStatus);
-
-  // 画面復帰時(他アプリから戻った/タブをアクティブにした)
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && navigator.onLine) {
-      fetchMasters(false);
-    }
-  });
-
-  // 定期更新(5分おき:マスタ再取得)
-  setInterval(() => {
-    if (navigator.onLine) fetchMasters(false);
-  }, 5 * 60 * 1000);
-
-  // 手動更新ボタン
-  document.getElementById('refreshBtn').addEventListener('click', async () => {
+  // 集計
+  document.getElementById('summaryBtn').addEventListener('click', () => {
     document.getElementById('menuOverlay').classList.remove('open');
-    showSnackbar('更新中...');
-    await fetchMasters(true);
+    openSummary(false);
   });
+  document.getElementById('summaryCloseBtn').addEventListener('click', closeSummary);
 
-  // 同期バッジ:タップでマスタ更新
-  document.getElementById('syncBadge').addEventListener('click', () => {
+  // メモ
+  document.getElementById('memoBtn').addEventListener('click', () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+    openMemoModal();
+  });
+  document.getElementById('memoModalOverlay').addEventListener('click', closeMemoModal);
+  document.getElementById('memoCancelBtn').addEventListener('click', closeMemoModal);
+  document.getElementById('memoSaveBtn').addEventListener('click', saveMemo);
+
+  // 同期バッジ:タップでマスタ + 直近の記録を取得
+  document.getElementById('syncBadge').addEventListener('click', async () => {
     if (!navigator.onLine) {
       showSnackbar('オフラインです');
       return;
     }
-    fetchMasters(true);
+    showSnackbar('更新中...');
+    await fetchMasters();
+    await fetchTodayBaskets();
+    showSnackbar('最新の状態に更新しました');
   });
+
+  // ネットワーク
+  window.addEventListener('online', () => {
+    updateSyncStatus();
+    fetchMasters();
+    fetchTodayBaskets();
+  });
+  window.addEventListener('offline', updateSyncStatus);
+
+  // 画面復帰時(他アプリから戻った)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && navigator.onLine) {
+      fetchMasters();
+      fetchTodayBaskets();
+    }
+  });
+
+  // 定期更新(画面表示中・5分おき)
+  setInterval(() => {
+    if (document.visibilityState === 'visible' && navigator.onLine) {
+      fetchMasters();
+      fetchTodayBaskets();
+    }
+  }, 5 * 60 * 1000);
 
   // ==========================================================
   // 初期化
   // ==========================================================
-  // ==========================================================
-  // 集計画面
-  // ==========================================================
-  async function openSummary(isEndOfDay) {
-    document.getElementById('summaryScreen').classList.add('open');
-    const titleEl = document.getElementById('summaryTitle');
-    const body = document.getElementById('summaryBody');
-    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
-    body.innerHTML = '<div class="summary-empty">読み込み中...</div>';
-
-    let baskets = recentBaskets;
-    let dataSource = 'local';
-    let weather = null;
-
-    if (navigator.onLine) {
-      try {
-        const res = await jsonpCall('getTodayBaskets');
-        if (res && res.ok && Array.isArray(res.baskets)) {
-          baskets = res.baskets.map(b => {
-            const t = new Date(b.confirmed_at);
-            const timeStr = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
-            return {
-              basketId: b.basket_id,
-              time: timeStr,
-              items: b.items.map(i => ({ name: i.name, qty: i.qty })),
-              recorder: b.recorder,
-              confirmed_at: b.confirmed_at,
-            };
-          });
-          dataSource = 'sheet';
-        }
-      } catch (err) {
-        console.warn('Sheets集計取得失敗、ローカルデータで代用:', err);
-      }
-      // 天気サマリーも取得
-      try {
-        const wres = await jsonpCall('getTodayWeatherSummary');
-        if (wres && wres.ok && wres.hasData) {
-          weather = wres.summary;
-        }
-      } catch (err) {
-        console.warn('天気サマリー取得失敗:', err);
-      }
-    }
-
-    renderSummary(isEndOfDay, baskets, dataSource, weather);
-  }
-  function closeSummary() {
-    document.getElementById('summaryScreen').classList.remove('open');
-  }
-
-  function renderSummary(isEndOfDay, baskets, dataSource, weather) {
-    const titleEl = document.getElementById('summaryTitle');
-    const body = document.getElementById('summaryBody');
-    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
-
-    if (!baskets || baskets.length === 0) {
-      body.innerHTML = '<div class="summary-empty">本日の記録はまだありません<br>記録を始めると、ここに集計が表示されます</div>';
-      return;
-    }
-
-    // 集計
-    const totalBaskets = baskets.length;
-    const totalItems = baskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
-    const avgItemsPerBasket = (totalItems / totalBaskets).toFixed(1);
-
-    // 営業時間の算出
-    const times = baskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
-    let timeRangeStr = '—';
-    let durationStr = '—';
-    if (times.length > 0) {
-      const min = new Date(Math.min(...times.map(t => t.getTime())));
-      const max = new Date(Math.max(...times.map(t => t.getTime())));
-      const fmt = (d) => String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-      timeRangeStr = fmt(min) + ' 〜 ' + fmt(max);
-      const diffMin = Math.round((max - min) / 60000);
-      const h = Math.floor(diffMin / 60);
-      const m = diffMin % 60;
-      durationStr = (h > 0 ? h + '時間' : '') + (m + '分');
-    }
-
-    // 商品別集計
-    const productMap = {};
-    baskets.forEach(b => {
-      b.items.forEach(i => {
-        if (!productMap[i.name]) productMap[i.name] = 0;
-        productMap[i.name] += i.qty;
-      });
-    });
-    const productRanking = Object.keys(productMap)
-      .map(name => ({ name: name, qty: productMap[name] }))
-      .sort((a, b) => b.qty - a.qty);
-    const maxProductQty = productRanking[0] ? productRanking[0].qty : 1;
-
-    // 時間帯別集計(0-23時)
-    const hourlyCounts = new Array(24).fill(0);
-    baskets.forEach(b => {
-      if (!b.confirmed_at) return;
-      const h = new Date(b.confirmed_at).getHours();
-      const qty = b.items.reduce((s, i) => s + i.qty, 0);
-      hourlyCounts[h] += qty;
-    });
-    let firstHour = -1, lastHour = -1;
-    for (let h = 0; h < 24; h++) {
-      if (hourlyCounts[h] > 0) {
-        if (firstHour === -1) firstHour = h;
-        lastHour = h;
-      }
-    }
-    const maxHourly = Math.max(...hourlyCounts, 1);
-
-    let html = '';
-
-    if (isEndOfDay) {
-      const today = new Date();
-      const days = ['日','月','火','水','木','金','土'];
-      const dateStr = (today.getMonth()+1) + '月' + today.getDate() + '日(' + days[today.getDay()] + ')';
-      html += '<div class="summary-greeting">' +
-        '<div class="summary-greeting-title">おつかれさまでした 🌙</div>' +
-        '<div class="summary-greeting-sub">' + dateStr + ' の営業を終了しました</div>' +
-      '</div>';
-    }
-
-    // データソース表示(ローカルだけの場合は警告)
-    if (dataSource === 'local') {
-      html += '<div style="background:rgba(217,97,78,0.08); border:1px solid rgba(217,97,78,0.2); border-radius:12px; padding:10px 12px; margin-bottom:12px; font-size:12px; color:var(--red); text-align:center;">' +
-        'オフラインのため、この端末の記録のみ表示しています' +
-      '</div>';
-    }
-
-    // A. 基本サマリー
-    html += '<div class="summary-card">' +
-      '<div class="summary-card-title">本日の概要</div>' +
-      '<div class="stat-grid">' +
-        '<div class="stat-cell">' +
-          '<div class="stat-cell-label">basket数</div>' +
-          '<div class="stat-cell-value">' + totalBaskets + '<span class="stat-cell-unit">組</span></div>' +
-        '</div>' +
-        '<div class="stat-cell">' +
-          '<div class="stat-cell-label">総杯数</div>' +
-          '<div class="stat-cell-value">' + totalItems + '<span class="stat-cell-unit">杯</span></div>' +
-        '</div>' +
-        '<div class="stat-cell">' +
-          '<div class="stat-cell-label">1組あたり</div>' +
-          '<div class="stat-cell-value">' + avgItemsPerBasket + '<span class="stat-cell-unit">杯</span></div>' +
-        '</div>' +
-        '<div class="stat-cell">' +
-          '<div class="stat-cell-label">営業時間</div>' +
-          '<div class="stat-cell-value" style="font-size:18px;">' + durationStr + '</div>' +
-          '<div class="stat-cell-label" style="margin-top:2px; font-size:10px;">' + timeRangeStr + '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-
-    // B. 商品ランキング
-    html += '<div class="summary-card">' +
-      '<div class="summary-card-title">商品ランキング</div>';
-    productRanking.forEach((p, idx) => {
-      const pct = ((p.qty / totalItems) * 100).toFixed(0);
-      const barWidth = (p.qty / maxProductQty) * 100;
-      html += '<div class="ranking-row ' + (idx === 0 ? 'top1' : '') + '">' +
-        '<div class="ranking-rank">' + (idx + 1) + '</div>' +
-        '<div class="ranking-name">' + p.name + '</div>' +
-        '<div class="ranking-bar-wrap"><div class="ranking-bar" style="width:' + barWidth + '%;"></div></div>' +
-        '<div class="ranking-qty">' + p.qty + '杯<span class="pct">(' + pct + '%)</span></div>' +
-      '</div>';
-    });
-    html += '</div>';
-
-    // C. 時間帯分布
-    html += '<div class="summary-card">' +
-      '<div class="summary-card-title">時間帯分布</div>';
-    if (firstHour === -1) {
-      html += '<div class="hourly-empty">時刻データがありません</div>';
-    } else {
-      let peakHour = firstHour;
-      for (let h = firstHour; h <= lastHour; h++) {
-        if (hourlyCounts[h] > hourlyCounts[peakHour]) peakHour = h;
-      }
-      let chartHtml = '<div class="hourly-chart">';
-      let labelsHtml = '<div class="hourly-labels">';
-      for (let h = firstHour; h <= lastHour; h++) {
-        const count = hourlyCounts[h];
-        const heightPct = count > 0 ? (count / maxHourly) * 100 : 0;
-        const isPeak = h === peakHour && count > 0;
-        chartHtml += '<div class="hourly-bar-wrap">' +
-          (count > 0 ? '<div class="hourly-bar-value">' + count + '</div>' : '<div class="hourly-bar-value">&nbsp;</div>') +
-          '<div class="hourly-bar ' + (isPeak ? 'peak' : '') + '" style="height:' + heightPct + '%;"></div>' +
-        '</div>';
-        labelsHtml += '<div class="hourly-label">' + h + '</div>';
-      }
-      chartHtml += '</div>';
-      labelsHtml += '</div>';
-      html += chartHtml + labelsHtml;
-      html += '<div style="margin-top:12px; font-size:11px; color:var(--label-tertiary); text-align:center;">' +
-        'ピーク:' + peakHour + '時(' + hourlyCounts[peakHour] + '杯)' +
-      '</div>';
-    }
-    html += '</div>';
-
-    // D. 天気サマリー
-    if (weather) {
-      const tempRange = weather.tempMin && weather.tempMax
-        ? weather.tempMin + '℃ 〜 ' + weather.tempMax + '℃'
-        : '—';
-      const rainStr = parseFloat(weather.totalRain) > 0
-        ? weather.totalRain + ' mm'
-        : 'なし';
-      html += '<div class="summary-card">' +
-        '<div class="summary-card-title">本日の天気</div>' +
-        '<div class="stat-grid">' +
-          '<div class="stat-cell">' +
-            '<div class="stat-cell-label">天候</div>' +
-            '<div class="stat-cell-value" style="font-size:18px;">' + weather.dominantLabel + '</div>' +
-          '</div>' +
-          '<div class="stat-cell">' +
-            '<div class="stat-cell-label">気温(平均)</div>' +
-            '<div class="stat-cell-value">' + (weather.tempAvg || '—') + '<span class="stat-cell-unit">℃</span></div>' +
-          '</div>' +
-          '<div class="stat-cell">' +
-            '<div class="stat-cell-label">気温(最低〜最高)</div>' +
-            '<div class="stat-cell-value" style="font-size:14px;">' + tempRange + '</div>' +
-          '</div>' +
-          '<div class="stat-cell">' +
-            '<div class="stat-cell-label">降水量</div>' +
-            '<div class="stat-cell-value" style="font-size:18px;">' + rainStr + '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    }
-
-    body.innerHTML = html;
-  }
-
-  // ==========================================================
-  // マスタ再取得(複数のトリガーから呼ばれる)
-  // ==========================================================
-  let isFetchingMasters = false;
-  async function fetchMasters(showFeedback) {
-    if (isFetchingMasters) return false;
-    if (!navigator.onLine) {
-      if (showFeedback) showSnackbar('オフラインです');
-      return false;
-    }
-    isFetchingMasters = true;
-    let updated = false;
-    try {
-      const res = await jsonpCall('getProducts');
-      if (res && res.ok && Array.isArray(res.products)) {
-        const newJson = JSON.stringify(res.products);
-        if (newJson !== JSON.stringify(PRODUCTS)) {
-          PRODUCTS = res.products;
-          saveProducts(PRODUCTS);
-          updated = true;
-        }
-      }
-    } catch (err) {
-      console.warn('商品マスタ取得失敗:', err);
-    }
-    try {
-      const res = await jsonpCall('getRecorders');
-      if (res && res.ok && Array.isArray(res.recorders)) {
-        const newJson = JSON.stringify(res.recorders);
-        if (newJson !== JSON.stringify(RECORDERS)) {
-          RECORDERS = res.recorders;
-          saveRecorders(RECORDERS);
-          updated = true;
-        }
-      }
-    } catch (err) {
-      console.warn('記録者マスタ取得失敗:', err);
-    }
-    isFetchingMasters = false;
-    if (updated) renderAll();
-    if (showFeedback) {
-      showSnackbar(updated ? '最新の状態に更新しました' : '既に最新です');
-    }
-    return updated;
-  }
-
   async function initialize() {
-    // 旧バージョンの腐ったキューがあれば自動削除(クリーンアップ)
+    // 旧バージョンの腐ったキューがあれば自動削除
     try { localStorage.removeItem('tally.sync_queue'); } catch(e) {}
+    try { localStorage.removeItem('tally.recent'); } catch(e) {}
+    try { localStorage.removeItem('tally.recent_date'); } catch(e) {}
+    try { localStorage.removeItem('tally.device_id'); } catch(e) {}
 
     renderAll();
     if (navigator.onLine) {
-      await fetchMasters(false);
+      await fetchMasters();
+      await fetchTodayBaskets();
     }
   }
 
