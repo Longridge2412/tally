@@ -2228,21 +2228,19 @@
   // ==========================================================
   async function openSummary(isEndOfDay) {
     document.getElementById('summaryScreen').classList.add('open');
-    // 先にローディング状態
     const titleEl = document.getElementById('summaryTitle');
     const body = document.getElementById('summaryBody');
     titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
     body.innerHTML = '<div class="summary-empty">読み込み中...</div>';
 
-    let baskets = recentBaskets; // フォールバック:ローカル
+    let baskets = recentBaskets;
     let dataSource = 'local';
+    let weather = null;
 
-    // Sheetsから全端末分の今日のbasketを取得(オンライン時のみ)
     if (navigator.onLine) {
       try {
         const res = await jsonpCall('getTodayBaskets');
         if (res && res.ok && Array.isArray(res.baskets)) {
-          // フォーマット変換
           baskets = res.baskets.map(b => {
             const t = new Date(b.confirmed_at);
             const timeStr = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
@@ -2259,15 +2257,24 @@
       } catch (err) {
         console.warn('Sheets集計取得失敗、ローカルデータで代用:', err);
       }
+      // 天気サマリーも取得
+      try {
+        const wres = await jsonpCall('getTodayWeatherSummary');
+        if (wres && wres.ok && wres.hasData) {
+          weather = wres.summary;
+        }
+      } catch (err) {
+        console.warn('天気サマリー取得失敗:', err);
+      }
     }
 
-    renderSummary(isEndOfDay, baskets, dataSource);
+    renderSummary(isEndOfDay, baskets, dataSource, weather);
   }
   function closeSummary() {
     document.getElementById('summaryScreen').classList.remove('open');
   }
 
-  function renderSummary(isEndOfDay, baskets, dataSource) {
+  function renderSummary(isEndOfDay, baskets, dataSource, weather) {
     const titleEl = document.getElementById('summaryTitle');
     const body = document.getElementById('summaryBody');
     titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
@@ -2415,6 +2422,37 @@
       '</div>';
     }
     html += '</div>';
+
+    // D. 天気サマリー
+    if (weather) {
+      const tempRange = weather.tempMin && weather.tempMax
+        ? weather.tempMin + '℃ 〜 ' + weather.tempMax + '℃'
+        : '—';
+      const rainStr = parseFloat(weather.totalRain) > 0
+        ? weather.totalRain + ' mm'
+        : 'なし';
+      html += '<div class="summary-card">' +
+        '<div class="summary-card-title">本日の天気</div>' +
+        '<div class="stat-grid">' +
+          '<div class="stat-cell">' +
+            '<div class="stat-cell-label">天候</div>' +
+            '<div class="stat-cell-value" style="font-size:18px;">' + weather.dominantLabel + '</div>' +
+          '</div>' +
+          '<div class="stat-cell">' +
+            '<div class="stat-cell-label">気温(平均)</div>' +
+            '<div class="stat-cell-value">' + (weather.tempAvg || '—') + '<span class="stat-cell-unit">℃</span></div>' +
+          '</div>' +
+          '<div class="stat-cell">' +
+            '<div class="stat-cell-label">気温(最低〜最高)</div>' +
+            '<div class="stat-cell-value" style="font-size:14px;">' + tempRange + '</div>' +
+          '</div>' +
+          '<div class="stat-cell">' +
+            '<div class="stat-cell-label">降水量</div>' +
+            '<div class="stat-cell-value" style="font-size:18px;">' + rainStr + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
 
     body.innerHTML = html;
   }
