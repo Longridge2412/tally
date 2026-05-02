@@ -665,6 +665,13 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+  .snackbar.error {
+    background: var(--red);
+    box-shadow: 0 12px 32px rgba(217, 97, 78, 0.4), var(--shadow-lg);
+    white-space: normal;
+    text-align: center;
+    max-width: calc(100% - 32px);
+  }
 
   /* ============================================================
      Admin screen
@@ -1369,7 +1376,6 @@
     RECENT: 'tally.recent',
     RECENT_DATE: 'tally.recent_date',
     RECORDER: 'tally.recorder',
-    SYNC_QUEUE: 'tally.sync_queue',
     DEVICE_ID: 'tally.device_id',
   };
 
@@ -1457,75 +1463,32 @@
   }
   function loadRecorder() { return localStorage.getItem(LS.RECORDER) || 'Yuki'; }
   function saveRecorder(r) { localStorage.setItem(LS.RECORDER, r); }
-  function loadSyncQueue() {
-    try { return JSON.parse(localStorage.getItem(LS.SYNC_QUEUE) || '[]'); }
-    catch(e) { return []; }
-  }
-  function saveSyncQueue(queue) { localStorage.setItem(LS.SYNC_QUEUE, JSON.stringify(queue)); }
 
-  // --- 同期キュー ---
-  function enqueue(action, params) {
-    const queue = loadSyncQueue();
-    queue.push({
-      taskId: generateId('task'),
-      action: action,
-      params: params,
-      retries: 0,
-      queuedAt: Date.now(),
-    });
-    saveSyncQueue(queue);
-    updateSyncStatus();
-    processSyncQueue();
-  }
-
-  let isSyncing = false;
-  async function processSyncQueue() {
-    if (isSyncing) return;
-    if (!navigator.onLine) { updateSyncStatus(); return; }
-    const queue = loadSyncQueue();
-    if (queue.length === 0) { updateSyncStatus(); return; }
-    isSyncing = true;
-    updateSyncStatus();
-
-    const remaining = queue.slice();
-    while (remaining.length > 0) {
-      const task = remaining[0];
-      try {
-        const res = await jsonpCall(task.action, task.params);
-        if (res && res.ok) {
-          remaining.shift();
-          saveSyncQueue(remaining);
-        } else {
-          task.retries = (task.retries || 0) + 1;
-          task.lastError = (res && res.error) || 'unknown';
-          saveSyncQueue(remaining);
-          break;
-        }
-      } catch (err) {
-        task.retries = (task.retries || 0) + 1;
-        task.lastError = err.message;
-        saveSyncQueue(remaining);
-        break;
-      }
+  // ==========================================================
+  // 即時送信(同期キューなし)
+  // 成功すれば呼び出し側は何もしない、失敗すれば例外を投げる
+  // ==========================================================
+  async function sendToServer(action, params) {
+    if (!navigator.onLine) {
+      throw new Error('オフラインです');
     }
-    isSyncing = false;
-    updateSyncStatus();
+    const res = await jsonpCall(action, params);
+    if (!res || !res.ok) {
+      throw new Error(res && res.error ? res.error : '送信失敗');
+    }
+    return res;
   }
 
   function updateSyncStatus() {
     const dot = document.querySelector('.sync-dot');
     const label = document.querySelector('.sync-label');
     if (!dot || !label) return;
-    const queue = loadSyncQueue();
     if (!navigator.onLine) {
       dot.style.background = '#C05B3F';
       label.textContent = 'オフライン';
-    } else if (queue.length > 0) {
-      dot.style.background = '#D4A84B';
-      label.textContent = '保留(' + queue.length + ')';
     } else {
       dot.style.background = '#7A9B6E';
-      label.textContent = '同期済';
+      label.textContent = 'オンライン';
     }
   }
 
@@ -1698,10 +1661,13 @@
   }
 
   // ==========================================================
-  // basket確定
+  // basket確定(即時送信)
   // ==========================================================
-  function confirmBasket() {
+  async function confirmBasket() {
     if (cart.length === 0) return;
+    const recordBtn = document.getElementById('recordBtn');
+    if (recordBtn.disabled) return;
+
     const now = new Date();
     const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     const basket_id = 'b_' + getDeviceId() + '_' + Date.now();
@@ -1715,25 +1681,43 @@
       recorder: recorder,
     }));
 
-    recentBaskets.unshift({
-      basketId: basket_id,
-      time: timeStr,
-      items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty })),
-      recorder: recorder,
-      confirmed_at: confirmed_at,
-    });
-    saveRecent(recentBaskets);
-    cart = [];
-    renderAll();
-    enqueue('addBasket', { data: { basket_id: basket_id, confirmed_at: confirmed_at, items: items, note: '' } });
-    showSnackbar('✓ ' + totalQty + '点 記録しました');
+    // ボタンを一時的に無効化(連打防止)
+    recordBtn.disabled = true;
+    const originalText = recordBtn.textContent;
+    recordBtn.textContent = '送信中...';
+
+    try {
+      await sendToServer('addBasket', {
+        data: { basket_id: basket_id, confirmed_at: confirmed_at, items: items, note: '' }
+      });
+      // 成功:UI更新
+      recentBaskets.unshift({
+        basketId: basket_id,
+        time: timeStr,
+        items: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty })),
+        recorder: recorder,
+        confirmed_at: confirmed_at,
+      });
+      saveRecent(recentBaskets);
+      cart = [];
+      renderAll();
+      showSnackbar('✓ ' + totalQty + '点 記録しました');
+    } catch (err) {
+      // 失敗:カートはそのまま、エラー通知
+      recordBtn.disabled = false;
+      recordBtn.textContent = originalText;
+      showSnackbar('⚠️ 送信失敗 ' + err.message + ' (もう一度押してください)', 'error');
+    }
   }
 
-  function showSnackbar(text) {
+  function showSnackbar(text, type) {
     const sb = document.getElementById('snackbar');
     sb.textContent = text;
+    sb.classList.remove('error');
+    if (type === 'error') sb.classList.add('error');
     sb.classList.add('show');
-    setTimeout(() => sb.classList.remove('show'), 2000);
+    const duration = type === 'error' ? 3500 : 2000;
+    setTimeout(() => sb.classList.remove('show'), duration);
   }
 
   // ==========================================================
@@ -1791,48 +1775,66 @@
     editingBasket = null;
   }
 
-  function saveBasketEdit() {
+  async function saveBasketEdit() {
     if (!editingBasket) return;
     if (editingBasket.items.length === 0) { deleteBasket(); return; }
     const basket = recentBaskets.find(b => b.basketId === editingBasket.basketId);
     if (!basket) return;
 
-    enqueue('modifyBasket', {
-      data: {
-        basket_id: editingBasket.basketId,
-        action: 'modify',
-        original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
-        modified_items: editingBasket.items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
-        modified_at: new Date().toISOString(),
-        recorder: recorder,
-      }
-    });
+    const saveBtn = document.getElementById('basketEditSaveBtn');
+    saveBtn.disabled = true;
+    const origText = saveBtn.textContent;
+    saveBtn.textContent = '送信中...';
 
-    basket.items = editingBasket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty }));
-    saveRecent(recentBaskets);
-    renderAll();
-    closeBasketEditModal();
-    showSnackbar('記録を修正しました');
+    try {
+      await sendToServer('modifyBasket', {
+        data: {
+          basket_id: editingBasket.basketId,
+          action: 'modify',
+          original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+          modified_items: editingBasket.items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+          modified_at: new Date().toISOString(),
+          recorder: recorder,
+        }
+      });
+      basket.items = editingBasket.items.map(i => ({ id: i.id, name: i.name, qty: i.qty }));
+      saveRecent(recentBaskets);
+      renderAll();
+      closeBasketEditModal();
+      showSnackbar('記録を修正しました');
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = origText;
+      showSnackbar('⚠️ 修正失敗 ' + err.message, 'error');
+    }
   }
 
-  function deleteBasket() {
+  async function deleteBasket() {
     if (!editingBasket) return;
     if (!confirm('この記録を削除しますか?\n※データには「削除済」として残ります')) return;
 
-    enqueue('modifyBasket', {
-      data: {
-        basket_id: editingBasket.basketId,
-        action: 'delete',
-        original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
-        modified_at: new Date().toISOString(),
-        recorder: recorder,
-      }
-    });
-    recentBaskets = recentBaskets.filter(b => b.basketId !== editingBasket.basketId);
-    saveRecent(recentBaskets);
-    renderAll();
-    closeBasketEditModal();
-    showSnackbar('記録を削除しました');
+    const delBtn = document.getElementById('basketEditDeleteBtn');
+    delBtn.disabled = true;
+
+    try {
+      await sendToServer('modifyBasket', {
+        data: {
+          basket_id: editingBasket.basketId,
+          action: 'delete',
+          original_items: editingBasket.original_items.map(i => ({ product_id: i.id, product_name: i.name, quantity: i.qty })),
+          modified_at: new Date().toISOString(),
+          recorder: recorder,
+        }
+      });
+      recentBaskets = recentBaskets.filter(b => b.basketId !== editingBasket.basketId);
+      saveRecent(recentBaskets);
+      renderAll();
+      closeBasketEditModal();
+      showSnackbar('記録を削除しました');
+    } catch (err) {
+      delBtn.disabled = false;
+      showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
+    }
   }
 
   // ==========================================================
@@ -1867,42 +1869,59 @@
     });
   }
 
-  function handleAdminAction(action, id) {
+  async function handleAdminAction(action, id) {
     const idx = PRODUCTS.findIndex(p => p.id === id);
     if (idx === -1) return;
     const product = PRODUCTS[idx];
 
     if (action === 'up' && idx > 0) {
       const tmp = PRODUCTS[idx - 1]; PRODUCTS[idx - 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
-      syncProductOrder();
+      PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
       saveProducts(PRODUCTS);
       renderAdminList();
+      try {
+        await sendToServer('reorderProducts', {
+          data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
+        });
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'down' && idx < PRODUCTS.length - 1) {
       const tmp = PRODUCTS[idx + 1]; PRODUCTS[idx + 1] = PRODUCTS[idx]; PRODUCTS[idx] = tmp;
-      syncProductOrder();
+      PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
       saveProducts(PRODUCTS);
       renderAdminList();
+      try {
+        await sendToServer('reorderProducts', {
+          data: PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }))
+        });
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'toggle') {
       product.active = !product.active;
-      enqueue('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
       saveProducts(PRODUCTS);
       renderAdminList();
+      try {
+        await sendToServer('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+      } catch (err) {
+        // ロールバック
+        product.active = !product.active;
+        saveProducts(PRODUCTS);
+        renderAdminList();
+        showSnackbar('⚠️ 切替失敗 ' + err.message, 'error');
+      }
     } else if (action === 'edit') {
       openEditModal(product);
     } else if (action === 'delete') {
       if (confirm('「' + product.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
-        PRODUCTS.splice(idx, 1);
-        enqueue('deleteProduct', { productId: id });
-        saveProducts(PRODUCTS);
-        renderAdminList();
+        try {
+          await sendToServer('deleteProduct', { productId: id });
+          PRODUCTS.splice(idx, 1);
+          saveProducts(PRODUCTS);
+          renderAdminList();
+          showSnackbar('削除しました');
+        } catch (err) {
+          showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
+        }
       }
     }
-  }
-
-  function syncProductOrder() {
-    PRODUCTS.forEach((p, i) => { p.display_order = i + 1; });
-    const orderList = PRODUCTS.map((p, i) => ({ id: p.id, display_order: i + 1 }));
-    enqueue('reorderProducts', { data: orderList });
   }
 
   function openEditModal(product) {
@@ -1916,25 +1935,36 @@
     document.getElementById('editModalOverlay').classList.remove('open');
     editingProductId = null;
   }
-  function saveProduct() {
+  async function saveProduct() {
     const name = document.getElementById('editNameInput').value.trim();
     if (!name) { alert('商品名を入力してください'); return; }
-    if (editingProductId === null) {
-      const id = 'p_' + Date.now();
-      const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
-      const newProduct = { id: id, name: name, active: true, display_order: maxOrder + 1 };
-      PRODUCTS.push(newProduct);
-      enqueue('upsertProduct', { data: newProduct });
-    } else {
-      const product = PRODUCTS.find(p => p.id === editingProductId);
-      if (product) {
-        product.name = name;
-        enqueue('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+    const saveBtn = document.getElementById('editSaveBtn');
+    saveBtn.disabled = true;
+    const origText = saveBtn.textContent;
+    saveBtn.textContent = '送信中...';
+
+    try {
+      if (editingProductId === null) {
+        const id = 'p_' + Date.now();
+        const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
+        const newProduct = { id: id, name: name, active: true, display_order: maxOrder + 1 };
+        await sendToServer('upsertProduct', { data: newProduct });
+        PRODUCTS.push(newProduct);
+      } else {
+        const product = PRODUCTS.find(p => p.id === editingProductId);
+        if (product) {
+          await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active } });
+          product.name = name;
+        }
       }
+      saveProducts(PRODUCTS);
+      closeEditModal();
+      renderAdminList();
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = origText;
+      showSnackbar('⚠️ 保存失敗 ' + err.message, 'error');
     }
-    saveProducts(PRODUCTS);
-    closeEditModal();
-    renderAdminList();
   }
 
   // ==========================================================
@@ -1969,42 +1999,58 @@
     });
   }
 
-  function handleRecorderAdminAction(action, id) {
+  async function handleRecorderAdminAction(action, id) {
     const idx = RECORDERS.findIndex(r => r.id === id);
     if (idx === -1) return;
     const rec = RECORDERS[idx];
 
     if (action === 'up' && idx > 0) {
       const tmp = RECORDERS[idx - 1]; RECORDERS[idx - 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
-      syncRecorderOrder();
+      RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
+      try {
+        await sendToServer('reorderRecorders', {
+          data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
+        });
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'down' && idx < RECORDERS.length - 1) {
       const tmp = RECORDERS[idx + 1]; RECORDERS[idx + 1] = RECORDERS[idx]; RECORDERS[idx] = tmp;
-      syncRecorderOrder();
+      RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
+      try {
+        await sendToServer('reorderRecorders', {
+          data: RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }))
+        });
+      } catch (err) { showSnackbar('⚠️ 並び替え失敗 ' + err.message, 'error'); }
     } else if (action === 'toggle') {
       rec.active = !rec.active;
-      enqueue('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
       saveRecorders(RECORDERS);
       renderRecorderAdminList();
+      try {
+        await sendToServer('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
+      } catch (err) {
+        rec.active = !rec.active;
+        saveRecorders(RECORDERS);
+        renderRecorderAdminList();
+        showSnackbar('⚠️ 切替失敗 ' + err.message, 'error');
+      }
     } else if (action === 'edit') {
       openRecorderEditModal(rec);
     } else if (action === 'delete') {
       if (confirm('「' + rec.name + '」を削除しますか?\n\n※過去の記録データは残ります')) {
-        RECORDERS.splice(idx, 1);
-        enqueue('deleteRecorder', { recorderId: id });
-        saveRecorders(RECORDERS);
-        renderRecorderAdminList();
+        try {
+          await sendToServer('deleteRecorder', { recorderId: id });
+          RECORDERS.splice(idx, 1);
+          saveRecorders(RECORDERS);
+          renderRecorderAdminList();
+          showSnackbar('削除しました');
+        } catch (err) {
+          showSnackbar('⚠️ 削除失敗 ' + err.message, 'error');
+        }
       }
     }
-  }
-
-  function syncRecorderOrder() {
-    RECORDERS.forEach((r, i) => { r.display_order = i + 1; });
-    const orderList = RECORDERS.map((r, i) => ({ id: r.id, display_order: i + 1 }));
-    enqueue('reorderRecorders', { data: orderList });
   }
 
   function openRecorderEditModal(rec) {
@@ -2018,31 +2064,41 @@
     document.getElementById('recorderEditModalOverlay').classList.remove('open');
     editingRecorderId = null;
   }
-  function saveRecorderEdit() {
+  async function saveRecorderEdit() {
     const name = document.getElementById('recorderEditNameInput').value.trim();
     if (!name) { alert('名前を入力してください'); return; }
-    if (editingRecorderId === null) {
-      const id = 'r_' + Date.now();
-      const maxOrder = RECORDERS.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
-      const newRec = { id: id, name: name, active: true, display_order: maxOrder + 1 };
-      RECORDERS.push(newRec);
-      enqueue('upsertRecorder', { data: newRec });
-    } else {
-      const rec = RECORDERS.find(r => r.id === editingRecorderId);
-      if (rec) {
-        const oldName = rec.name;
-        rec.name = name;
-        // 現在の選択中記録者の名前が変わった場合、localStorage上の名前も更新
-        if (oldName === recorder) {
-          recorder = name;
-          saveRecorder(recorder);
+    const saveBtn = document.getElementById('recorderEditSaveBtn');
+    saveBtn.disabled = true;
+    const origText = saveBtn.textContent;
+    saveBtn.textContent = '送信中...';
+
+    try {
+      if (editingRecorderId === null) {
+        const id = 'r_' + Date.now();
+        const maxOrder = RECORDERS.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+        const newRec = { id: id, name: name, active: true, display_order: maxOrder + 1 };
+        await sendToServer('upsertRecorder', { data: newRec });
+        RECORDERS.push(newRec);
+      } else {
+        const rec = RECORDERS.find(r => r.id === editingRecorderId);
+        if (rec) {
+          await sendToServer('upsertRecorder', { data: { id: rec.id, name: name, active: rec.active } });
+          const oldName = rec.name;
+          rec.name = name;
+          if (oldName === recorder) {
+            recorder = name;
+            saveRecorder(recorder);
+          }
         }
-        enqueue('upsertRecorder', { data: { id: rec.id, name: rec.name, active: rec.active } });
       }
+      saveRecorders(RECORDERS);
+      closeRecorderEditModal();
+      renderRecorderAdminList();
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = origText;
+      showSnackbar('⚠️ 保存失敗 ' + err.message, 'error');
     }
-    saveRecorders(RECORDERS);
-    closeRecorderEditModal();
-    renderRecorderAdminList();
   }
 
   // ==========================================================
@@ -2071,32 +2127,20 @@
   document.getElementById('summaryCloseBtn').addEventListener('click', closeSummary);
 
   document.getElementById('endBtn').addEventListener('click', async () => {
-    const queue = loadSyncQueue();
-    let confirmMsg = '営業終了しますか?';
-    if (queue.length > 0) {
-      confirmMsg = '⚠️ 未送信のデータが ' + queue.length + ' 件あります\n\n' +
-        'まず同期してから終了します。\n' +
-        'よろしいですか?';
-    }
-    if (!confirm(confirmMsg)) return;
-
+    if (!confirm('営業終了しますか?')) return;
     document.getElementById('menuOverlay').classList.remove('open');
 
-    // 残っているキューを先に流してから営業終了
-    if (queue.length > 0) {
-      showSnackbar('同期中...');
-      await processSyncQueue();
-      const remaining = loadSyncQueue();
-      if (remaining.length > 0) {
-        if (!confirm('⚠️ ' + remaining.length + '件がまだ同期できていません\n\nそれでも営業終了しますか?(後でアプリを開いた時に自動再送されます)')) {
-          return;
-        }
-      }
+    const endBtn = document.getElementById('endBtn');
+    endBtn.disabled = true;
+    try {
+      await sendToServer('markBusinessEnd', {});
+      // 営業終了後に集計画面を自動表示
+      openSummary(true);
+    } catch (err) {
+      showSnackbar('⚠️ 営業終了の記録失敗 ' + err.message, 'error');
+    } finally {
+      endBtn.disabled = false;
     }
-    enqueue('markBusinessEnd', {});
-    processSyncQueue();
-    // 営業終了後に集計画面を自動表示
-    openSummary(true);
   });
 
   // 商品管理
@@ -2138,8 +2182,7 @@
   // ネットワーク状態
   window.addEventListener('online', () => {
     updateSyncStatus();
-    processSyncQueue();
-    fetchMasters(false); // ネット復帰時に最新マスタも取りに行く
+    fetchMasters(false);
   });
   window.addEventListener('offline', updateSyncStatus);
 
@@ -2147,14 +2190,12 @@
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && navigator.onLine) {
       fetchMasters(false);
-      processSyncQueue();
     }
   });
 
-  // 定期同期(5分おき:キュー処理 + マスタ再取得)
+  // 定期更新(5分おき:マスタ再取得)
   setInterval(() => {
-    processSyncQueue();
-    fetchMasters(false);
+    if (navigator.onLine) fetchMasters(false);
   }, 5 * 60 * 1000);
 
   // 手動更新ボタン
@@ -2162,62 +2203,16 @@
     document.getElementById('menuOverlay').classList.remove('open');
     showSnackbar('更新中...');
     await fetchMasters(true);
-    processSyncQueue();
   });
 
-  // 同期バッジ:タップで強制同期、長押しで腐ったキューの確認
-  let syncBadgeLongPressTimer = null;
-  let syncBadgeLongPressed = false;
-  const syncBadgeEl = document.getElementById('syncBadge');
-
-  syncBadgeEl.addEventListener('touchstart', (e) => {
-    syncBadgeLongPressed = false;
-    syncBadgeLongPressTimer = setTimeout(() => {
-      syncBadgeLongPressed = true;
-      handleSyncBadgeLongPress();
-    }, 800);
-  });
-  syncBadgeEl.addEventListener('touchend', () => {
-    clearTimeout(syncBadgeLongPressTimer);
-  });
-  syncBadgeEl.addEventListener('touchcancel', () => {
-    clearTimeout(syncBadgeLongPressTimer);
-  });
-  syncBadgeEl.addEventListener('click', (e) => {
-    if (syncBadgeLongPressed) { e.preventDefault(); return; }
-    // 通常タップ:強制同期
+  // 同期バッジ:タップでマスタ更新
+  document.getElementById('syncBadge').addEventListener('click', () => {
     if (!navigator.onLine) {
       showSnackbar('オフラインです');
       return;
     }
-    showSnackbar('同期中...');
-    processSyncQueue();
-    fetchMasters(false);
+    fetchMasters(true);
   });
-
-  function handleSyncBadgeLongPress() {
-    const queue = loadSyncQueue();
-    if (queue.length === 0) {
-      alert('保留中のデータはありません');
-      return;
-    }
-    const stuck = queue.filter(t => (t.retries || 0) >= 5);
-    let msg = '保留中: ' + queue.length + '件\n';
-    if (stuck.length > 0) {
-      msg += '失敗続き: ' + stuck.length + '件\n\n';
-      msg += '失敗続きのデータをクリアしますか?\n';
-      msg += '※Sheetsへの送信を諦めます\n';
-      msg += '※当日の表示には影響しません';
-      if (confirm(msg)) {
-        const cleaned = queue.filter(t => (t.retries || 0) < 5);
-        saveSyncQueue(cleaned);
-        updateSyncStatus();
-        showSnackbar(stuck.length + '件をクリアしました');
-      }
-    } else {
-      alert(msg + '失敗続きのデータはありません');
-    }
-  }
 
   // ==========================================================
   // 初期化
@@ -2428,8 +2423,10 @@
   }
 
   async function initialize() {
+    // 旧バージョンの腐ったキューがあれば自動削除(クリーンアップ)
+    try { localStorage.removeItem('tally.sync_queue'); } catch(e) {}
+
     renderAll();
-    if (loadSyncQueue().length > 0) processSyncQueue();
     if (navigator.onLine) {
       await fetchMasters(false);
     }
