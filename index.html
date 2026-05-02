@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>POSSIBLE COFFEE タリー</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -96,12 +99,15 @@
     width: 100%;
     max-width: 430px;
     height: 100vh;
+    height: 100dvh; /* dynamic viewport for mobile browsers */
     max-height: 100vh;
+    max-height: 100dvh;
     background: var(--bg-primary);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    padding-top: env(safe-area-inset-top);
   }
 
   /* Ambient warm glow — extremely subtle */
@@ -136,6 +142,7 @@
                   0 16px 32px rgba(0, 0, 0, 0.25),
                   inset 0 0 0 1px rgba(255, 255, 255, 0.05);
       margin: 20px 0;
+      padding-top: 0;
     }
   }
 
@@ -145,10 +152,11 @@
   .status-bar {
     position: relative;
     z-index: 10;
-    padding: 14px 20px 12px;
+    padding: 12px 16px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     background: var(--bg-glass);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -157,8 +165,8 @@
   }
 
   .menu-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: var(--r-full);
     border: none;
     background: var(--fill-secondary);
@@ -167,6 +175,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     transition: all 0.18s var(--ease-ios);
   }
   .menu-btn:active {
@@ -174,16 +183,20 @@
     transform: scale(0.92);
   }
 
-  .stat-center { text-align: center; }
+  .stat-center {
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+  }
   .stat-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     color: var(--label-secondary);
     letter-spacing: 0.2px;
     margin-bottom: 1px;
   }
   .stat-value {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: -0.2px;
     font-variant-numeric: tabular-nums;
@@ -193,14 +206,21 @@
   .sync-badge {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     padding: 6px 10px 6px 8px;
     border-radius: var(--r-full);
     background: var(--fill-secondary);
     font-size: 11px;
     font-weight: 500;
     color: var(--label-primary);
+    flex-shrink: 0;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.15s;
   }
+  .sync-badge:active { background: var(--fill-primary); }
   .sync-dot {
     width: 8px;
     height: 8px;
@@ -316,18 +336,18 @@
   .products {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 16px 12px;
+    padding: 14px 14px 8px;
     position: relative;
     z-index: 1;
     -webkit-overflow-scrolling: touch;
   }
   .section-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--label-tertiary);
-    padding: 0 4px 10px;
+    padding: 0 4px 8px;
   }
   .product-grid {
     display: grid;
@@ -336,7 +356,7 @@
   }
   .product-btn {
     position: relative;
-    height: 88px;
+    height: 80px;
     background: var(--bg-elevated);
     border: none;
     border-radius: var(--r-md);
@@ -349,6 +369,7 @@
     box-shadow: var(--shadow-sm);
     transition: all 0.22s var(--ease-ios);
     overflow: hidden;
+    padding: 0 8px;
   }
   .product-btn::before {
     content: '';
@@ -401,14 +422,14 @@
   .cart-section {
     position: relative;
     z-index: 1;
-    padding: 4px 16px 0;
+    padding: 0 14px;
     flex-shrink: 0;
   }
   .cart-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 8px 4px 10px;
+    padding: 6px 4px 8px;
   }
   .cart-recorder {
     font-size: 11px;
@@ -416,7 +437,7 @@
     letter-spacing: 0.2px;
   }
   .cart-empty {
-    padding: 18px;
+    padding: 14px;
     text-align: center;
     font-size: 13px;
     color: var(--label-tertiary);
@@ -424,7 +445,7 @@
     border-radius: var(--r-md);
   }
   .cart-items {
-    max-height: 160px;
+    max-height: 130px;
     overflow-y: auto;
     background: var(--bg-elevated);
     border-radius: var(--r-md);
@@ -508,7 +529,7 @@
   .recent-section {
     position: relative;
     z-index: 1;
-    padding: 8px 16px 0;
+    padding: 6px 14px 0;
     flex-shrink: 0;
   }
   .recent-toggle {
@@ -516,7 +537,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 14px;
+    padding: 9px 14px;
     background: var(--fill-tertiary);
     border: none;
     border-radius: var(--r-sm);
@@ -538,7 +559,7 @@
   .recent-list {
     display: none;
     padding: 8px 0 0;
-    max-height: 180px;
+    max-height: 140px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -584,13 +605,13 @@
   .record-section {
     position: relative;
     z-index: 1;
-    padding: 16px 16px 0;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    padding: 12px 14px 12px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
     flex-shrink: 0;
   }
   .record-btn {
     width: 100%;
-    height: 54px;
+    height: 56px;
     border: none;
     border-radius: var(--r-md);
     background: var(--accent);
@@ -938,6 +959,252 @@
 
   /* Scrollbar minimal */
   ::-webkit-scrollbar { width: 0; display: none; }
+
+  /* ============================================================
+     Summary screen (本日の集計)
+     ============================================================ */
+  .summary-screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-primary);
+    z-index: 55;
+    display: none;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top);
+    animation: slideUp 0.4s var(--ease-ios-out);
+  }
+  .summary-screen.open { display: flex; }
+
+  .summary-header {
+    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-glass);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+    flex-shrink: 0;
+  }
+  .summary-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .summary-close-btn {
+    background: var(--fill-secondary);
+    border: none;
+    color: var(--label-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-full);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .summary-close-btn:active {
+    background: var(--fill-primary);
+    transform: scale(0.92);
+  }
+
+  .summary-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 14px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .summary-greeting {
+    text-align: center;
+    padding: 8px 16px 18px;
+  }
+  .summary-greeting-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--label-primary);
+    margin-bottom: 4px;
+  }
+  .summary-greeting-sub {
+    font-size: 13px;
+    color: var(--label-secondary);
+    letter-spacing: -0.1px;
+  }
+
+  /* Summary card */
+  .summary-card {
+    background: var(--bg-elevated);
+    border-radius: var(--r-md);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .summary-card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-tertiary);
+    margin-bottom: 12px;
+  }
+
+  /* A. Stat grid */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .stat-cell {
+    background: var(--fill-tertiary);
+    border-radius: var(--r-sm);
+    padding: 12px 14px;
+  }
+  .stat-cell-label {
+    font-size: 11px;
+    color: var(--label-secondary);
+    margin-bottom: 4px;
+    letter-spacing: -0.1px;
+  }
+  .stat-cell-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--label-primary);
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-cell-unit {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--label-secondary);
+    margin-left: 2px;
+  }
+
+  /* B. Product ranking */
+  .ranking-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .ranking-row:last-child { border-bottom: none; }
+  .ranking-rank {
+    width: 22px;
+    height: 22px;
+    border-radius: var(--r-full);
+    background: var(--fill-secondary);
+    color: var(--label-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .ranking-row.top1 .ranking-rank { background: var(--accent); color: #FFFFFF; }
+  .ranking-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--label-primary);
+    letter-spacing: -0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ranking-bar-wrap {
+    flex: 1.2;
+    height: 6px;
+    background: var(--fill-tertiary);
+    border-radius: var(--r-full);
+    overflow: hidden;
+  }
+  .ranking-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: var(--r-full);
+    transition: width 0.6s var(--ease-ios-out);
+  }
+  .ranking-qty {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--label-primary);
+    font-variant-numeric: tabular-nums;
+    min-width: 50px;
+    text-align: right;
+  }
+  .ranking-qty .pct {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--label-tertiary);
+    margin-left: 3px;
+  }
+
+  /* C. Hourly distribution */
+  .hourly-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 100px;
+    padding: 6px 2px 0;
+    border-bottom: 1px solid var(--separator);
+  }
+  .hourly-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    position: relative;
+  }
+  .hourly-bar-value {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--label-secondary);
+    margin-bottom: 2px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .hourly-bar {
+    width: 100%;
+    background: var(--accent);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: height 0.6s var(--ease-ios-out);
+  }
+  .hourly-bar.peak { background: var(--accent-warm); }
+  .hourly-labels {
+    display: flex;
+    gap: 3px;
+    padding: 4px 2px 0;
+  }
+  .hourly-label {
+    flex: 1;
+    text-align: center;
+    font-size: 9px;
+    color: var(--label-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .hourly-empty {
+    text-align: center;
+    padding: 30px 0;
+    font-size: 12px;
+    color: var(--label-tertiary);
+  }
+
+  .summary-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--label-tertiary);
+    font-size: 14px;
+    line-height: 1.7;
+  }
 </style>
 </head>
 <body>
@@ -952,10 +1219,10 @@
       <div class="stat-label" id="dateLabel">—</div>
       <div class="stat-value"><span id="itemCount">0</span> 杯</div>
     </div>
-    <div class="sync-badge">
+    <button class="sync-badge" id="syncBadge" aria-label="同期">
       <div class="sync-dot"></div>
       <span class="sync-label">同期済</span>
-    </div>
+    </button>
   </header>
 
   <!-- メニュー -->
@@ -967,6 +1234,8 @@
       </div>
       <button class="end-btn" id="recorderAdminBtn" style="color:var(--label-secondary);">記録者を管理</button>
       <div class="menu-label" style="margin-top:16px;">その他</div>
+      <button class="end-btn" id="summaryBtn">本日の集計</button>
+      <button class="end-btn" id="refreshBtn">最新の状態に更新</button>
       <button class="end-btn" id="adminBtn">商品管理</button>
       <button class="end-btn" id="endBtn">営業終了</button>
       <button class="menu-close" id="menuCloseBtn">閉じる</button>
@@ -1027,6 +1296,15 @@
     </header>
     <div class="admin-list" id="recorderAdminList"></div>
     <button class="add-btn" id="addRecorderBtn">+ 記録者を追加</button>
+  </div>
+
+  <!-- 本日の集計画面 -->
+  <div class="summary-screen" id="summaryScreen">
+    <header class="summary-header">
+      <div class="summary-title" id="summaryTitle">本日の集計</div>
+      <button class="summary-close-btn" id="summaryCloseBtn" aria-label="閉じる">×</button>
+    </header>
+    <div class="summary-body" id="summaryBody"></div>
   </div>
 
   <!-- 編集モーダル(商品マスタ用) -->
@@ -1785,11 +2063,40 @@
     document.getElementById('menuOverlay').classList.remove('open');
   });
 
-  document.getElementById('endBtn').addEventListener('click', () => {
-    if (!confirm('営業終了しますか?')) return;
-    enqueue('markBusinessEnd', {});
+  // 集計画面
+  document.getElementById('summaryBtn').addEventListener('click', () => {
     document.getElementById('menuOverlay').classList.remove('open');
-    showSnackbar('営業終了しました');
+    openSummary(false);
+  });
+  document.getElementById('summaryCloseBtn').addEventListener('click', closeSummary);
+
+  document.getElementById('endBtn').addEventListener('click', async () => {
+    const queue = loadSyncQueue();
+    let confirmMsg = '営業終了しますか?';
+    if (queue.length > 0) {
+      confirmMsg = '⚠️ 未送信のデータが ' + queue.length + ' 件あります\n\n' +
+        'まず同期してから終了します。\n' +
+        'よろしいですか?';
+    }
+    if (!confirm(confirmMsg)) return;
+
+    document.getElementById('menuOverlay').classList.remove('open');
+
+    // 残っているキューを先に流してから営業終了
+    if (queue.length > 0) {
+      showSnackbar('同期中...');
+      await processSyncQueue();
+      const remaining = loadSyncQueue();
+      if (remaining.length > 0) {
+        if (!confirm('⚠️ ' + remaining.length + '件がまだ同期できていません\n\nそれでも営業終了しますか?(後でアプリを開いた時に自動再送されます)')) {
+          return;
+        }
+      }
+    }
+    enqueue('markBusinessEnd', {});
+    processSyncQueue();
+    // 営業終了後に集計画面を自動表示
+    openSummary(true);
   });
 
   // 商品管理
@@ -1829,42 +2136,302 @@
   document.getElementById('basketEditDeleteBtn').addEventListener('click', deleteBasket);
 
   // ネットワーク状態
-  window.addEventListener('online', () => { updateSyncStatus(); processSyncQueue(); });
+  window.addEventListener('online', () => {
+    updateSyncStatus();
+    processSyncQueue();
+    fetchMasters(false); // ネット復帰時に最新マスタも取りに行く
+  });
   window.addEventListener('offline', updateSyncStatus);
 
-  // 自動同期(5分おき)
-  setInterval(processSyncQueue, 5 * 60 * 1000);
+  // 画面復帰時(他アプリから戻った/タブをアクティブにした)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && navigator.onLine) {
+      fetchMasters(false);
+      processSyncQueue();
+    }
+  });
+
+  // 定期同期(5分おき:キュー処理 + マスタ再取得)
+  setInterval(() => {
+    processSyncQueue();
+    fetchMasters(false);
+  }, 5 * 60 * 1000);
+
+  // 手動更新ボタン
+  document.getElementById('refreshBtn').addEventListener('click', async () => {
+    document.getElementById('menuOverlay').classList.remove('open');
+    showSnackbar('更新中...');
+    await fetchMasters(true);
+    processSyncQueue();
+  });
+
+  // 同期バッジ:タップで強制同期、長押しで腐ったキューの確認
+  let syncBadgeLongPressTimer = null;
+  let syncBadgeLongPressed = false;
+  const syncBadgeEl = document.getElementById('syncBadge');
+
+  syncBadgeEl.addEventListener('touchstart', (e) => {
+    syncBadgeLongPressed = false;
+    syncBadgeLongPressTimer = setTimeout(() => {
+      syncBadgeLongPressed = true;
+      handleSyncBadgeLongPress();
+    }, 800);
+  });
+  syncBadgeEl.addEventListener('touchend', () => {
+    clearTimeout(syncBadgeLongPressTimer);
+  });
+  syncBadgeEl.addEventListener('touchcancel', () => {
+    clearTimeout(syncBadgeLongPressTimer);
+  });
+  syncBadgeEl.addEventListener('click', (e) => {
+    if (syncBadgeLongPressed) { e.preventDefault(); return; }
+    // 通常タップ:強制同期
+    if (!navigator.onLine) {
+      showSnackbar('オフラインです');
+      return;
+    }
+    showSnackbar('同期中...');
+    processSyncQueue();
+    fetchMasters(false);
+  });
+
+  function handleSyncBadgeLongPress() {
+    const queue = loadSyncQueue();
+    if (queue.length === 0) {
+      alert('保留中のデータはありません');
+      return;
+    }
+    const stuck = queue.filter(t => (t.retries || 0) >= 5);
+    let msg = '保留中: ' + queue.length + '件\n';
+    if (stuck.length > 0) {
+      msg += '失敗続き: ' + stuck.length + '件\n\n';
+      msg += '失敗続きのデータをクリアしますか?\n';
+      msg += '※Sheetsへの送信を諦めます\n';
+      msg += '※当日の表示には影響しません';
+      if (confirm(msg)) {
+        const cleaned = queue.filter(t => (t.retries || 0) < 5);
+        saveSyncQueue(cleaned);
+        updateSyncStatus();
+        showSnackbar(stuck.length + '件をクリアしました');
+      }
+    } else {
+      alert(msg + '失敗続きのデータはありません');
+    }
+  }
 
   // ==========================================================
   // 初期化
   // ==========================================================
-  async function initialize() {
-    renderAll();
+  // ==========================================================
+  // 集計画面
+  // ==========================================================
+  function openSummary(isEndOfDay) {
+    renderSummary(isEndOfDay);
+    document.getElementById('summaryScreen').classList.add('open');
+  }
+  function closeSummary() {
+    document.getElementById('summaryScreen').classList.remove('open');
+  }
 
-    if (loadSyncQueue().length > 0) processSyncQueue();
+  function renderSummary(isEndOfDay) {
+    const titleEl = document.getElementById('summaryTitle');
+    const body = document.getElementById('summaryBody');
+    titleEl.textContent = isEndOfDay ? 'おつかれさまでした' : '本日の集計';
 
-    if (navigator.onLine) {
-      // 商品マスタ
-      try {
-        const res = await jsonpCall('getProducts');
-        if (res && res.ok && Array.isArray(res.products)) {
+    if (recentBaskets.length === 0) {
+      body.innerHTML = '<div class="summary-empty">本日の記録はまだありません<br>記録を始めると、ここに集計が表示されます</div>';
+      return;
+    }
+
+    // 集計
+    const totalBaskets = recentBaskets.length;
+    const totalItems = recentBaskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
+    const avgItemsPerBasket = (totalItems / totalBaskets).toFixed(1);
+
+    // 営業時間の算出
+    const times = recentBaskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
+    let timeRangeStr = '—';
+    let durationStr = '—';
+    if (times.length > 0) {
+      const min = new Date(Math.min(...times.map(t => t.getTime())));
+      const max = new Date(Math.max(...times.map(t => t.getTime())));
+      const fmt = (d) => String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      timeRangeStr = fmt(min) + ' 〜 ' + fmt(max);
+      const diffMin = Math.round((max - min) / 60000);
+      const h = Math.floor(diffMin / 60);
+      const m = diffMin % 60;
+      durationStr = (h > 0 ? h + '時間' : '') + (m + '分');
+    }
+
+    // 商品別集計
+    const productMap = {};
+    recentBaskets.forEach(b => {
+      b.items.forEach(i => {
+        if (!productMap[i.name]) productMap[i.name] = 0;
+        productMap[i.name] += i.qty;
+      });
+    });
+    const productRanking = Object.keys(productMap)
+      .map(name => ({ name: name, qty: productMap[name] }))
+      .sort((a, b) => b.qty - a.qty);
+    const maxProductQty = productRanking[0] ? productRanking[0].qty : 1;
+
+    // 時間帯別集計(0-23時)
+    const hourlyCounts = new Array(24).fill(0);
+    recentBaskets.forEach(b => {
+      if (!b.confirmed_at) return;
+      const h = new Date(b.confirmed_at).getHours();
+      const qty = b.items.reduce((s, i) => s + i.qty, 0);
+      hourlyCounts[h] += qty;
+    });
+    // 営業時間の範囲だけ抽出(0杯の時間も間に挟む)
+    let firstHour = -1, lastHour = -1;
+    for (let h = 0; h < 24; h++) {
+      if (hourlyCounts[h] > 0) {
+        if (firstHour === -1) firstHour = h;
+        lastHour = h;
+      }
+    }
+    const maxHourly = Math.max(...hourlyCounts, 1);
+
+    // HTML生成
+    let html = '';
+
+    if (isEndOfDay) {
+      const today = new Date();
+      const days = ['日','月','火','水','木','金','土'];
+      const dateStr = (today.getMonth()+1) + '月' + today.getDate() + '日(' + days[today.getDay()] + ')';
+      html += '<div class="summary-greeting">' +
+        '<div class="summary-greeting-title">おつかれさまでした 🌙</div>' +
+        '<div class="summary-greeting-sub">' + dateStr + ' の営業を終了しました</div>' +
+      '</div>';
+    }
+
+    // A. 基本サマリー
+    html += '<div class="summary-card">' +
+      '<div class="summary-card-title">本日の概要</div>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">basket数</div>' +
+          '<div class="stat-cell-value">' + totalBaskets + '<span class="stat-cell-unit">組</span></div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">総杯数</div>' +
+          '<div class="stat-cell-value">' + totalItems + '<span class="stat-cell-unit">杯</span></div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">1組あたり</div>' +
+          '<div class="stat-cell-value">' + avgItemsPerBasket + '<span class="stat-cell-unit">杯</span></div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">営業時間</div>' +
+          '<div class="stat-cell-value" style="font-size:18px;">' + durationStr + '</div>' +
+          '<div class="stat-cell-label" style="margin-top:2px; font-size:10px;">' + timeRangeStr + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    // B. 商品ランキング
+    html += '<div class="summary-card">' +
+      '<div class="summary-card-title">商品ランキング</div>';
+    productRanking.forEach((p, idx) => {
+      const pct = ((p.qty / totalItems) * 100).toFixed(0);
+      const barWidth = (p.qty / maxProductQty) * 100;
+      html += '<div class="ranking-row ' + (idx === 0 ? 'top1' : '') + '">' +
+        '<div class="ranking-rank">' + (idx + 1) + '</div>' +
+        '<div class="ranking-name">' + p.name + '</div>' +
+        '<div class="ranking-bar-wrap"><div class="ranking-bar" style="width:' + barWidth + '%;"></div></div>' +
+        '<div class="ranking-qty">' + p.qty + '杯<span class="pct">(' + pct + '%)</span></div>' +
+      '</div>';
+    });
+    html += '</div>';
+
+    // C. 時間帯分布
+    html += '<div class="summary-card">' +
+      '<div class="summary-card-title">時間帯分布</div>';
+    if (firstHour === -1) {
+      html += '<div class="hourly-empty">時刻データがありません</div>';
+    } else {
+      // ピーク時間特定
+      let peakHour = firstHour;
+      for (let h = firstHour; h <= lastHour; h++) {
+        if (hourlyCounts[h] > hourlyCounts[peakHour]) peakHour = h;
+      }
+      let chartHtml = '<div class="hourly-chart">';
+      let labelsHtml = '<div class="hourly-labels">';
+      for (let h = firstHour; h <= lastHour; h++) {
+        const count = hourlyCounts[h];
+        const heightPct = count > 0 ? (count / maxHourly) * 100 : 0;
+        const isPeak = h === peakHour && count > 0;
+        chartHtml += '<div class="hourly-bar-wrap">' +
+          (count > 0 ? '<div class="hourly-bar-value">' + count + '</div>' : '<div class="hourly-bar-value">&nbsp;</div>') +
+          '<div class="hourly-bar ' + (isPeak ? 'peak' : '') + '" style="height:' + heightPct + '%;"></div>' +
+        '</div>';
+        labelsHtml += '<div class="hourly-label">' + h + '</div>';
+      }
+      chartHtml += '</div>';
+      labelsHtml += '</div>';
+      html += chartHtml + labelsHtml;
+      html += '<div style="margin-top:12px; font-size:11px; color:var(--label-tertiary); text-align:center;">' +
+        'ピーク:' + peakHour + '時(' + hourlyCounts[peakHour] + '杯)' +
+      '</div>';
+    }
+    html += '</div>';
+
+    body.innerHTML = html;
+  }
+
+  // ==========================================================
+  // マスタ再取得(複数のトリガーから呼ばれる)
+  // ==========================================================
+  let isFetchingMasters = false;
+  async function fetchMasters(showFeedback) {
+    if (isFetchingMasters) return false;
+    if (!navigator.onLine) {
+      if (showFeedback) showSnackbar('オフラインです');
+      return false;
+    }
+    isFetchingMasters = true;
+    let updated = false;
+    try {
+      const res = await jsonpCall('getProducts');
+      if (res && res.ok && Array.isArray(res.products)) {
+        const newJson = JSON.stringify(res.products);
+        if (newJson !== JSON.stringify(PRODUCTS)) {
           PRODUCTS = res.products;
           saveProducts(PRODUCTS);
+          updated = true;
         }
-      } catch (err) {
-        console.warn('商品マスタ取得失敗、キャッシュを使用:', err);
       }
-      // 記録者マスタ
-      try {
-        const res = await jsonpCall('getRecorders');
-        if (res && res.ok && Array.isArray(res.recorders)) {
+    } catch (err) {
+      console.warn('商品マスタ取得失敗:', err);
+    }
+    try {
+      const res = await jsonpCall('getRecorders');
+      if (res && res.ok && Array.isArray(res.recorders)) {
+        const newJson = JSON.stringify(res.recorders);
+        if (newJson !== JSON.stringify(RECORDERS)) {
           RECORDERS = res.recorders;
           saveRecorders(RECORDERS);
+          updated = true;
         }
-      } catch (err) {
-        console.warn('記録者マスタ取得失敗、キャッシュを使用:', err);
       }
-      renderAll();
+    } catch (err) {
+      console.warn('記録者マスタ取得失敗:', err);
+    }
+    isFetchingMasters = false;
+    if (updated) renderAll();
+    if (showFeedback) {
+      showSnackbar(updated ? '最新の状態に更新しました' : '既に最新です');
+    }
+    return updated;
+  }
+
+  async function initialize() {
+    renderAll();
+    if (loadSyncQueue().length > 0) processSyncQueue();
+    if (navigator.onLine) {
+      await fetchMasters(false);
     }
   }
 
