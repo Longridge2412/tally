@@ -585,6 +585,11 @@
         <div class="edit-field-label">商品名</div>
         <input type="text" class="edit-input" id="editNameInput" placeholder="例:生黒糖ラテ" maxlength="30">
       </div>
+      <div class="edit-field">
+        <div class="edit-field-label">価格(円)</div>
+        <input type="number" class="edit-input" id="editPriceInput" placeholder="例:650" min="0" inputmode="numeric">
+        <div style="font-size:11px; color:var(--label-tertiary); margin-top:6px;">空欄でも保存可(売上集計から除外されます)</div>
+      </div>
       <div class="edit-actions">
         <button class="edit-btn cancel" id="editCancelBtn">キャンセル</button>
         <button class="edit-btn save" id="editSaveBtn">保存</button>
@@ -985,10 +990,22 @@
       await sendToServer('addBasket', {
         data: { basket_id: basket_id, confirmed_at: confirmed_at, items: items, note: '' }
       });
+      // 売上計算(価格設定がある商品のみ)
+      let cartSales = 0;
+      let allPriced = true;
+      cart.forEach(c => {
+        const p = PRODUCTS.find(pp => pp.id === c.id);
+        if (p && p.price !== null && p.price !== undefined && !isNaN(p.price)) {
+          cartSales += Number(p.price) * c.qty;
+        } else {
+          allPriced = false;
+        }
+      });
       cart = [];
       await fetchTodayBaskets();  // Sheetsから取得し直す
       renderAll();
-      showSnackbar('✓ ' + totalQty + '点 記録しました');
+      const salesStr = (allPriced && cartSales > 0) ? ' ¥' + cartSales.toLocaleString() : '';
+      showSnackbar('✓ ' + totalQty + '点' + salesStr + ' 記録しました');
     } catch (err) {
       recordBtn.disabled = false;
       recordBtn.textContent = orig;
@@ -1142,14 +1159,18 @@
       list.innerHTML = '<div class="admin-list-empty">商品がまだありません<br>下の「+ 商品を追加」から登録してください</div>';
       return;
     }
-    list.innerHTML = PRODUCTS.map((p, idx) =>
-      '<div class="admin-item ' + (!p.active ? 'inactive' : '') + '">' +
+    list.innerHTML = PRODUCTS.map((p, idx) => {
+      const priceLabel = (p.price !== null && p.price !== undefined && !isNaN(p.price))
+        ? '<div style="font-size:11px; color:var(--label-secondary); margin-top:2px;">¥' + Number(p.price).toLocaleString() + '</div>'
+        : '<div style="font-size:11px; color:var(--orange); margin-top:2px;">価格未設定</div>';
+      return '<div class="admin-item ' + (!p.active ? 'inactive' : '') + '">' +
         '<div class="reorder-group">' +
           '<button class="reorder-btn" data-action="up" data-id="' + p.id + '" ' + (idx === 0 ? 'disabled' : '') + '>▲</button>' +
           '<button class="reorder-btn" data-action="down" data-id="' + p.id + '" ' + (idx === PRODUCTS.length - 1 ? 'disabled' : '') + '>▼</button>' +
         '</div>' +
         '<div class="admin-item-body">' +
           '<div class="admin-item-title">' + p.name + '</div>' +
+          priceLabel +
         '</div>' +
         '<button class="toggle-switch ' + (p.active ? 'on' : '') + '" data-action="toggle" data-id="' + p.id + '"></button>' +
         '<button class="admin-icon-btn" data-action="edit" data-id="' + p.id + '">' +
@@ -1158,8 +1179,8 @@
         '<button class="admin-icon-btn danger" data-action="delete" data-id="' + p.id + '">' +
           '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>' +
         '</button>' +
-      '</div>'
-    ).join('');
+      '</div>';
+    }).join('');
     list.querySelectorAll('[data-action]').forEach(btn => {
       btn.addEventListener('click', () => handleAdminAction(btn.dataset.action, btn.dataset.id));
     });
@@ -1195,7 +1216,7 @@
       saveProducts(PRODUCTS);
       renderAdminList();
       try {
-        await sendToServer('upsertProduct', { data: { id: product.id, name: product.name, active: product.active } });
+        await sendToServer('upsertProduct', { data: { id: product.id, name: product.name, active: product.active, price: product.price } });
         await fetchMasters();
         renderAdminList();
       } catch (err) {
@@ -1224,6 +1245,8 @@
     editingProductId = product ? product.id : null;
     document.getElementById('editModalTitle').textContent = product ? '商品を編集' : '商品を追加';
     document.getElementById('editNameInput').value = product ? product.name : '';
+    const priceInput = document.getElementById('editPriceInput');
+    priceInput.value = (product && product.price !== null && product.price !== undefined) ? product.price : '';
     document.getElementById('editModalOverlay').classList.add('open');
     setTimeout(() => document.getElementById('editNameInput').focus(), 100);
   }
@@ -1234,6 +1257,13 @@
   async function saveProduct() {
     const name = document.getElementById('editNameInput').value.trim();
     if (!name) { alert('商品名を入力してください'); return; }
+    const priceRaw = document.getElementById('editPriceInput').value.trim();
+    let price = null;
+    if (priceRaw !== '') {
+      const n = Number(priceRaw);
+      if (isNaN(n) || n < 0) { alert('価格は0以上の数字を入れてください'); return; }
+      price = n;
+    }
     const saveBtn = document.getElementById('editSaveBtn');
     saveBtn.disabled = true;
     const orig = saveBtn.textContent;
@@ -1242,10 +1272,10 @@
       if (editingProductId === null) {
         const id = 'p_' + Date.now();
         const maxOrder = PRODUCTS.reduce((m, p) => Math.max(m, p.display_order || 0), 0);
-        await sendToServer('upsertProduct', { data: { id: id, name: name, active: true, display_order: maxOrder + 1 } });
+        await sendToServer('upsertProduct', { data: { id: id, name: name, active: true, display_order: maxOrder + 1, price: price } });
       } else {
         const product = PRODUCTS.find(p => p.id === editingProductId);
-        if (product) await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active } });
+        if (product) await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active, price: price } });
       }
       await fetchMasters();
       closeEditModal();
@@ -1500,14 +1530,30 @@
       '</div>';
     }
 
-    // A. 本日の概要
+    // 売上計算
+    let totalSales = 0;
+    let hasMissingPrice = false;
+    const productSalesMap = {};
+    baskets.forEach(b => b.items.forEach(i => {
+      const product = PRODUCTS.find(p => p.name === i.name);
+      const price = (product && product.price !== null && product.price !== undefined && !isNaN(product.price)) ? Number(product.price) : null;
+      if (price === null) {
+        hasMissingPrice = true;
+      } else {
+        totalSales += price * i.qty;
+        productSalesMap[i.name] = (productSalesMap[i.name] || 0) + price * i.qty;
+      }
+    }));
+
+    // A. 本日の概要(売上 / 杯数 / 営業時間)
     html += '<div class="summary-card">' +
       '<div class="summary-card-title">本日の概要</div>' +
       '<div class="stat-grid">' +
-        '<div class="stat-cell"><div class="stat-cell-label">basket数</div><div class="stat-cell-value">' + totalBaskets + '<span class="stat-cell-unit">組</span></div></div>' +
         '<div class="stat-cell"><div class="stat-cell-label">総杯数</div><div class="stat-cell-value">' + totalItems + '<span class="stat-cell-unit">杯</span></div></div>' +
-        '<div class="stat-cell"><div class="stat-cell-label">1組あたり</div><div class="stat-cell-value">' + avg + '<span class="stat-cell-unit">杯</span></div></div>' +
-        '<div class="stat-cell"><div class="stat-cell-label">営業時間</div><div class="stat-cell-value" style="font-size:18px;">' + durationStr + '</div><div class="stat-cell-label" style="margin-top:2px; font-size:10px;">' + timeRangeStr + '</div></div>' +
+        '<div class="stat-cell"><div class="stat-cell-label">売上(参考)</div><div class="stat-cell-value">¥' + totalSales.toLocaleString() + '</div>' +
+          (hasMissingPrice ? '<div class="stat-cell-label" style="margin-top:2px; font-size:10px; color:var(--orange);">価格未設定の商品あり</div>' : '') +
+        '</div>' +
+        '<div class="stat-cell" style="grid-column:1/-1;"><div class="stat-cell-label">営業時間</div><div class="stat-cell-value" style="font-size:18px;">' + durationStr + '</div><div class="stat-cell-label" style="margin-top:2px; font-size:10px;">' + timeRangeStr + '</div></div>' +
       '</div>' +
     '</div>';
 
@@ -1535,14 +1581,16 @@
     }
     html += '<button class="memo-edit-btn" id="summaryMemoEditBtn">' + (memo ? '編集' : '記録する') + '</button></div>';
 
-    // B. 商品ランキング
+    // B. 商品ランキング(杯数+金額)
     html += '<div class="summary-card"><div class="summary-card-title">商品ランキング</div>';
     productRanking.forEach((p, idx) => {
       const pct = ((p.qty / totalItems) * 100).toFixed(0);
       const barWidth = (p.qty / maxProductQty) * 100;
+      const sales = productSalesMap[p.name] || 0;
+      const salesStr = sales > 0 ? '<div style="font-size:10px; color:var(--label-tertiary); margin-top:2px;">¥' + sales.toLocaleString() + '</div>' : '';
       html += '<div class="ranking-row ' + (idx === 0 ? 'top1' : '') + '">' +
         '<div class="ranking-rank">' + (idx + 1) + '</div>' +
-        '<div class="ranking-name">' + p.name + '</div>' +
+        '<div class="ranking-name">' + p.name + salesStr + '</div>' +
         '<div class="ranking-bar-wrap"><div class="ranking-bar" style="width:' + barWidth + '%;"></div></div>' +
         '<div class="ranking-qty">' + p.qty + '杯<span class="pct">(' + pct + '%)</span></div>' +
       '</div>';
