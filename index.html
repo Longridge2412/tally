@@ -488,7 +488,10 @@
     </button>
     <div class="stat-center">
       <div class="stat-label" id="dateLabel">—</div>
-      <div class="stat-value"><span id="itemCount">0</span> 杯</div>
+      <div class="stat-value">
+        <span id="itemCount">0</span> 杯
+        <span id="weatherDisplay" style="margin-left:8px; font-size:12px; font-weight:500; color:var(--label-secondary);"></span>
+      </div>
     </div>
     <button class="sync-badge" id="syncBadge" aria-label="同期">
       <div class="sync-dot"></div>
@@ -632,9 +635,13 @@
   <div class="edit-modal-overlay" id="memoModalOverlay">
     <div class="edit-modal" onclick="event.stopPropagation()">
       <div class="edit-modal-title">今日のメモ</div>
+      <div id="previousMemoSection" style="display:none; margin-bottom:16px;">
+        <div class="edit-field-label" id="previousMemoLabel">前回のメモ</div>
+        <div id="previousMemoContent" style="background:var(--fill-tertiary); border-radius:12px; padding:10px 12px; font-size:13px; line-height:1.5; color:var(--label-secondary); white-space:pre-wrap; max-height:160px; overflow-y:auto; -webkit-overflow-scrolling:touch;"></div>
+      </div>
       <div class="edit-field">
         <div class="edit-field-label">記録</div>
-        <textarea class="edit-textarea" id="memoTextarea" placeholder="例:雨の日 / 試飲を出した / 隣でイベント / ◯◯切らした..."></textarea>
+        <textarea class="edit-textarea" id="memoTextarea" placeholder="例:雨の日 / 試飲を出した / 隣でイベント / 補充メモ:◯◯..."></textarea>
         <div style="font-size:11px; color:var(--label-tertiary); margin-top:6px;">後で振り返る時の手がかりになります</div>
       </div>
       <div class="edit-actions">
@@ -724,6 +731,44 @@
   function saveRecorders(r) { localStorage.setItem(LS.RECORDERS, JSON.stringify(r)); }
   function loadRecorder() { return localStorage.getItem(LS.RECORDER) || 'Yuki'; }
   function saveRecorder(r) { localStorage.setItem(LS.RECORDER, r); }
+
+  // 天気ラベル → 絵文字
+  function weatherEmoji(label) {
+    if (!label) return '';
+    if (label.indexOf('快晴') >= 0 || label.indexOf('晴れ') >= 0) return '☀';
+    if (label.indexOf('一部曇り') >= 0) return '🌤';
+    if (label.indexOf('曇り') >= 0) return '☁';
+    if (label.indexOf('雪') >= 0) return '❄';
+    if (label.indexOf('雷') >= 0) return '⛈';
+    if (label.indexOf('霧') >= 0) return '🌫';
+    if (label.indexOf('にわか雨') >= 0) return '🌦';
+    if (label.indexOf('雨') >= 0) return '☂';
+    return '';
+  }
+
+  let currentWeather = null;
+  async function fetchCurrentWeather() {
+    if (!navigator.onLine) return;
+    try {
+      const res = await jsonpCall('getCurrentWeather');
+      if (res && res.ok && res.hasData && res.weather) {
+        currentWeather = res.weather;
+        renderWeatherDisplay();
+      }
+    } catch (e) {
+      console.warn('天気取得失敗', e);
+    }
+  }
+
+  function renderWeatherDisplay() {
+    const el = document.getElementById('weatherDisplay');
+    if (!el) return;
+    if (!currentWeather) { el.textContent = ''; return; }
+    const emoji = weatherEmoji(currentWeather.weather_label);
+    const temp = currentWeather.temperature;
+    const tempStr = (temp !== null && !isNaN(temp)) ? Math.round(temp) + '°' : '';
+    el.textContent = (emoji ? emoji + ' ' : '') + tempStr;
+  }
 
   function updateSyncStatus() {
     const dot = document.querySelector('.sync-dot');
@@ -1268,6 +1313,7 @@
     saveBtn.disabled = true;
     const orig = saveBtn.textContent;
     saveBtn.textContent = '送信中...';
+    let saved = false;
     try {
       if (editingProductId === null) {
         const id = 'p_' + Date.now();
@@ -1277,13 +1323,17 @@
         const product = PRODUCTS.find(p => p.id === editingProductId);
         if (product) await sendToServer('upsertProduct', { data: { id: product.id, name: name, active: product.active, price: price } });
       }
-      await fetchMasters();
+      saved = true;
+      // 成功時:モーダルを閉じてからマスタ再取得(失敗してもUIには影響しない)
       closeEditModal();
+      showSnackbar('保存しました');
+      try { await fetchMasters(); } catch (e) { console.warn('再取得失敗', e); }
       renderAdminList();
     } catch (err) {
+      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
+    } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = orig;
-      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
     }
   }
 
@@ -1405,13 +1455,15 @@
           }
         }
       }
-      await fetchMasters();
       closeRecorderEditModal();
+      showSnackbar('保存しました');
+      try { await fetchMasters(); } catch (e) { console.warn('再取得失敗', e); }
       renderRecorderAdminList();
     } catch (err) {
+      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
+    } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = orig;
-      showSnackbar('⚠️ 保存失敗 ' + errorMessage(err), 'error');
     }
   }
 
@@ -1477,9 +1529,7 @@
       return;
     }
 
-    const totalBaskets = baskets.length;
     const totalItems = baskets.reduce((s, b) => s + b.items.reduce((ss, i) => ss + i.qty, 0), 0);
-    const avg = (totalItems / totalBaskets).toFixed(1);
     const times = baskets.map(b => b.confirmed_at ? new Date(b.confirmed_at) : null).filter(Boolean);
     let timeRangeStr = '—', durationStr = '—';
     if (times.length > 0) {
@@ -1668,7 +1718,6 @@
   // ==========================================================
   async function openMemoModal(currentMemo) {
     if (currentMemo === undefined) {
-      // メニューから直接呼ばれた時はSheetsから取得
       try {
         const res = await jsonpCall('getTodayMemo');
         currentMemo = (res && res.ok) ? (res.memo || '') : '';
@@ -1678,6 +1727,28 @@
     }
     document.getElementById('memoTextarea').value = currentMemo;
     document.getElementById('memoModalOverlay').classList.add('open');
+
+    // 前回のメモを取得して表示(失敗してもUIには影響しない)
+    const prevSection = document.getElementById('previousMemoSection');
+    const prevLabel = document.getElementById('previousMemoLabel');
+    const prevContent = document.getElementById('previousMemoContent');
+    prevSection.style.display = 'none';
+    if (navigator.onLine) {
+      try {
+        const res = await jsonpCall('getPreviousMemo');
+        if (res && res.ok && res.hasPrevious) {
+          const dateStr = res.date ? res.date.substring(5).replace('-', '/') : '';
+          prevLabel.textContent = '前回(' + dateStr + ')のメモ';
+          if (res.memo && res.memo.trim()) {
+            prevContent.textContent = res.memo;
+          } else {
+            prevContent.innerHTML = '<span style="color:var(--label-tertiary); font-size:12px;">(メモなし)</span>';
+          }
+          prevSection.style.display = 'block';
+        }
+      } catch (e) { console.warn('前回メモ取得失敗', e); }
+    }
+
     setTimeout(() => document.getElementById('memoTextarea').focus(), 100);
   }
   function closeMemoModal() {
@@ -1790,7 +1861,7 @@
   document.getElementById('memoCancelBtn').addEventListener('click', closeMemoModal);
   document.getElementById('memoSaveBtn').addEventListener('click', saveMemo);
 
-  // 同期バッジ:タップでマスタ + 直近の記録を取得
+  // 同期バッジ:タップでマスタ + 直近の記録 + 天気を取得
   document.getElementById('syncBadge').addEventListener('click', async () => {
     if (!navigator.onLine) {
       showSnackbar('オフラインです');
@@ -1799,6 +1870,7 @@
     showSnackbar('更新中...');
     await fetchMasters();
     await fetchTodayBaskets();
+    await fetchCurrentWeather();
     showSnackbar('最新の状態に更新しました');
   });
 
@@ -1807,6 +1879,7 @@
     updateSyncStatus();
     fetchMasters();
     fetchTodayBaskets();
+    fetchCurrentWeather();
   });
   window.addEventListener('offline', updateSyncStatus);
 
@@ -1815,6 +1888,7 @@
     if (document.visibilityState === 'visible' && navigator.onLine) {
       fetchMasters();
       fetchTodayBaskets();
+      fetchCurrentWeather();
     }
   });
 
@@ -1823,6 +1897,7 @@
     if (document.visibilityState === 'visible' && navigator.onLine) {
       fetchMasters();
       fetchTodayBaskets();
+      fetchCurrentWeather();
     }
   }, 5 * 60 * 1000);
 
@@ -1840,6 +1915,7 @@
     if (navigator.onLine) {
       await fetchMasters();
       await fetchTodayBaskets();
+      fetchCurrentWeather(); // 並列で取得(待たない)
     }
   }
 
